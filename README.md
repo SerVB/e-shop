@@ -1,4 +1,12 @@
 # e-shop
+## Rules
+- [x] Public repo.
+- [x] Task per branch.
+- [ ] Description.
+- [ ] Architecture graph.
+- [ ] Postman scheme/Swagger.
+- [ ] Docker-compose (run only with single `docker-compose up` command).
+
 ## Stages
 ### 1.
 Rest API:
