@@ -1,2 +1,6 @@
-.gradle/
-.idea/
+/.gradle/
+/.idea/
+/out/
+/build/
+/server/out/
+/server/build/
