@@ -1,26 +1,12 @@
 package io.github.servb.eShop.handler.product.v1
 
-import io.github.servb.eShop.model.Product
 import io.github.servb.eShop.model.productsStorage
 import io.github.servb.eShop.model.productsStorageRwLock
-import io.github.servb.eShop.util.createOkResponse
-import io.ktor.application.ApplicationCall
-import io.ktor.response.respond
+import io.github.servb.eShop.route.product.v1.ProductUsable
+import io.github.servb.eShop.util.OptionalResult
 import kotlin.concurrent.read
 
-data class ReturnProductsAnswerData(val name: String, val id: Int, val type: Int) {
-
-    companion object {
-
-        fun fromProduct(product: Product) = ReturnProductsAnswerData(
-            name = product.name,
-            id = product.id,
-            type = product.type
-        )
-    }
-}
-
-suspend fun returnProducts(offset: Int, limit: Int, call: ApplicationCall) {
+suspend fun returnProducts(offset: Int, limit: Int, respond: suspend (OptionalResult<List<ProductUsable>>) -> Unit) {
     val products = productsStorageRwLock.read {
         productsStorage
             .asSequence()
@@ -30,5 +16,5 @@ suspend fun returnProducts(offset: Int, limit: Int, call: ApplicationCall) {
             .toList()
     }
 
-    call.respond(message = createOkResponse(products.map { ReturnProductsAnswerData.fromProduct(it) }))
+    respond(OptionalResult(products.map(ProductUsable.Companion::fromProduct)))
 }

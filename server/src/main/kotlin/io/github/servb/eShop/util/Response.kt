@@ -1,13 +1,22 @@
 package io.github.servb.eShop.util
 
-import io.github.servb.eShop.constant.DATA
-import io.github.servb.eShop.constant.OK
+import com.papsign.ktor.openapigen.annotations.Response
 
-val NOT_OK_RESPONSE = mapOf(OK to false)
+@Response("A Success Result Response.")
+data class SuccessResult(val ok: Boolean) {
 
-val OK_RESPONSE = mapOf(OK to true)
+    companion object {
 
-fun <T : Any> createOkResponse(data: T) = mapOf(
-    OK to true,
-    DATA to data
-)
+        val NOT_OK = SuccessResult(ok = false)
+        val OK = SuccessResult(ok = true)
+    }
+}
+
+@Response("An Optional Result Response. Contains `null` in case of a failure and an object otherwise.")
+data class OptionalResult<out T>(val data: T) {
+
+    companion object {
+
+        val NOT_OK = OptionalResult(data = null)
+    }
+}

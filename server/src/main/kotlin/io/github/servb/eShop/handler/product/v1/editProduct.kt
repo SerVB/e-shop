@@ -1,28 +1,14 @@
 package io.github.servb.eShop.handler.product.v1
 
-import io.github.servb.eShop.model.Product
 import io.github.servb.eShop.model.productsStorage
 import io.github.servb.eShop.model.productsStorageRwLock
+import io.github.servb.eShop.route.product.v1.ProductUsable
 import io.github.servb.eShop.util.Do
-import io.github.servb.eShop.util.NOT_OK_RESPONSE
-import io.github.servb.eShop.util.OK_RESPONSE
-import io.ktor.application.ApplicationCall
-import io.ktor.request.receive
-import io.ktor.response.respond
+import io.github.servb.eShop.util.SuccessResult
 import kotlin.concurrent.write
 
-data class EditProductParameters(val name: String, val id: Int, val type: Int) {
-
-    fun toProduct() = Product(
-        name = name,
-        id = id,
-        type = type
-    )
-}
-
-suspend fun editProduct(call: ApplicationCall) {
-    val editedProductParameters = call.receive<EditProductParameters>()
-    val productToEdit = editedProductParameters.toProduct()
+suspend fun editProduct(body: ProductUsable, respond: suspend (SuccessResult) -> Unit) {
+    val productToEdit = body.toProduct()
 
     val result = productsStorageRwLock.write {
         when (productToEdit.id in productsStorage) {
@@ -31,12 +17,13 @@ suspend fun editProduct(call: ApplicationCall) {
 
                 true
             }
+
             false -> false
         }
     }
 
     Do exhaustive when (result) {
-        true -> call.respond(message = OK_RESPONSE)
-        false -> call.respond(message = NOT_OK_RESPONSE)
+        true -> respond(SuccessResult.OK)
+        false -> respond(SuccessResult.NOT_OK)
     }
 }

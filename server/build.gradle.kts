@@ -1,4 +1,5 @@
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
@@ -18,15 +19,21 @@ application {
     mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 repositories {
     mavenCentral()
     jcenter()
     maven { setUrl("https://kotlin.bintray.com/ktor") }
     maven { setUrl("https://kotlin.bintray.com/kotlin-js-wrappers") }
+    maven { setUrl("https://jitpack.io") }
 }
 
 val kotlinVersion: String by project
 val ktorVersion: String by project
+val ktorOpenApiGeneratorVersion: String by project
 val logbackVersion: String by project
 
 dependencies {
@@ -35,6 +42,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
+    implementation("com.github.papsign:Ktor-OpenAPI-Generator:$ktorOpenApiGeneratorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 

@@ -5,22 +5,24 @@ You can run the project easily using Docker:
 docker-compose up
 ```
 
+After that, you can check Swagger UI at <http://localhost:8080> for the API description.
+
 ## Rules
 - [x] Public repo.
 - [x] Task per branch.
-- [ ] Description.
+- [x] Description.
 - [ ] Architecture graph.
-- [ ] Postman scheme/Swagger.
+- [x] Swagger UI.
 - [x] Docker-compose.
 
 ## Stages
 ### 1.
 Rest API:
-- [x] Create product (POST `/product`).
-- [x] Remove product (DELETE `/product`).
-- [x] Return list of products (GET `/products`).
-- [x] Return product (GET `/product`).
-- [x] Edit product (PATCH `/product`).
+- [x] Create a product.
+- [x] Remove a product.
+- [x] Return a list of products.
+- [x] Return a product.
+- [x] Edit a product.
 
 "Product" entity:
 * Name.
