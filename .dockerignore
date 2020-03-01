@@ -1,0 +1,11 @@
+/.git/
+/.gradle/
+/.idea/
+/out/
+/build/
+/server/out/
+/server/build/
+/.gitignore
+/Dockerfile
+/docker-compose.yml
+/README.md

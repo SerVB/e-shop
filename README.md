@@ -1,11 +1,17 @@
 # e-shop
+## Running
+You can run the project easily using Docker:
+```shell script
+docker-compose up
+```
+
 ## Rules
 - [x] Public repo.
 - [x] Task per branch.
 - [ ] Description.
 - [ ] Architecture graph.
 - [ ] Postman scheme/Swagger.
-- [ ] Docker-compose (run only with single `docker-compose up` command).
+- [x] Docker-compose.
 
 ## Stages
 ### 1.
