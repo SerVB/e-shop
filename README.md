@@ -25,4 +25,4 @@ Extra points:
 - [x] Pagination in list of products.
 - [ ] Data storage in DB.
 - [x] Versioning.
-- [ ] Logging.
+- [x] Logging.
