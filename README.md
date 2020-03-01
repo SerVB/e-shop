@@ -1,3 +1,7 @@
+[![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.61-green.svg)](https://kotlinlang.org/)
+[![Ktor Badge](https://img.shields.io/badge/ktor-1.3.1-green.svg)](https://ktor.io/)
+[![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-0.0--beta.0-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+[![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 # e-shop
 ## Running
 You can run the project easily using Docker:
