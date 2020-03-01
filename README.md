@@ -10,11 +10,11 @@
 ## Stages
 ### 1.
 Rest API:
-- [ ] Create product.
-- [ ] Remove product.
-- [ ] Return list of products.
-- [ ] Return product.
-- [ ] Edit product.
+- [x] Create product (POST `/product`).
+- [x] Remove product (DELETE `/product`).
+- [x] Return list of products (GET `/products`).
+- [x] Return product (GET `/product`).
+- [x] Edit product (PATCH `/product`).
 
 "Product" entity:
 * Name.
@@ -22,7 +22,7 @@ Rest API:
 * Type.
 
 Extra points:
-- [ ] Pagination in list of products.
+- [x] Pagination in list of products.
 - [ ] Data storage in DB.
-- [ ] Versioning.
+- [x] Versioning.
 - [ ] Logging.
