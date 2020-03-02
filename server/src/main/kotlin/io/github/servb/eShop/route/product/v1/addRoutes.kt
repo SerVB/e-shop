@@ -83,8 +83,8 @@ fun NormalOpenAPIRoute.addRoutes() {
     }
 }
 
-@Response("A Product Response")
-@Request("A Product Request")
+@Response("A Product Response.")
+@Request("A Product Request.")
 data class ProductUsable(val name: String, val id: Int, val type: Int) {
 
     fun toProduct() = Product(
@@ -105,7 +105,7 @@ data class ProductUsable(val name: String, val id: Int, val type: Int) {
 
 @Path("{id}")
 data class ProductIdParam(
-    @PathParam("The Product ID") val id: Int
+    @PathParam("The Product ID.") val id: Int
 )
 
 data class ProductsParam(
