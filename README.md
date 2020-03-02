@@ -20,7 +20,7 @@ After that, you can check Swagger UI at <http://localhost:8080> for the API desc
 - [x] Docker-compose.
 
 ## Stages
-### 1.
+### 1. 2020.02.08 – 2020.03.07
 Rest API:
 - [x] Create a product.
 - [x] Remove a product.
