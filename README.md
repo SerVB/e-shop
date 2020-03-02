@@ -9,7 +9,7 @@ You can run the project easily using Docker:
 docker-compose up
 ```
 
-After that, you can check Swagger UI at <http://localhost:8080> for the API description.
+After that, you can check Swagger UI at <http://localhost:8080/swagger-ui> for the API description.
 
 ## Rules
 - [x] Public repo.

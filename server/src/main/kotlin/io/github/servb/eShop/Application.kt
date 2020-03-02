@@ -58,7 +58,7 @@ fun Application.module(testing: Boolean = false) {
             call.respond(application.openAPIGen.api)
         }
 
-        get("") {
+        get("swagger-ui") {
             call.respondRedirect("/swagger-ui/index.html?url=$OPEN_API_JSON_PATH", true)
         }
     }
