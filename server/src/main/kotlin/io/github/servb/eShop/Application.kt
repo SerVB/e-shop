@@ -19,6 +19,8 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.github.servb.eShop.route.product.v1.addRoutes as addProductRoutesV1
 
+private const val OPEN_API_JSON_PATH = "/openapi.json"
+
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
@@ -52,12 +54,12 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        get("openapi.json") {
+        get(OPEN_API_JSON_PATH) {
             call.respond(application.openAPIGen.api)
         }
 
         get("") {
-            call.respondRedirect("/swagger-ui/index.html?url=/openapi.json", true)
+            call.respondRedirect("/swagger-ui/index.html?url=$OPEN_API_JSON_PATH", true)
         }
     }
 
