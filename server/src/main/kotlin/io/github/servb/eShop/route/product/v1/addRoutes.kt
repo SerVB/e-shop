@@ -64,12 +64,17 @@ fun NormalOpenAPIRoute.addRoutes() {
     }
 
     route("products") {
-        get<ProductsParam, OptionalResult<List<ProductUsable>>>(
+        get<ProductsParam, OptionalResult<ProductList>>(
             info(
                 summary = "Return a list of products.",
                 description = "Returns `${OptionalResult::class.simpleName}` containing the list of products data."
             ),
-            example = OptionalResult(listOf(exampleProductUsable))
+            example = OptionalResult(
+                ProductList(
+                    totalCount = 100500,
+                    foundRequestedData = listOf(exampleProductUsable)
+                )
+            )
         ) { param ->
             val offset = param.offset ?: DEFAULT_OFFSET
             val limit = minOf(param.limit ?: MAX_LIMIT, MAX_LIMIT)
@@ -82,6 +87,9 @@ fun NormalOpenAPIRoute.addRoutes() {
         }
     }
 }
+
+@Response("A Products Response.")
+data class ProductList(val totalCount: Int, val foundRequestedData: List<ProductUsable>)
 
 @Response("A Product Response.")
 @Request("A Product Request.")
