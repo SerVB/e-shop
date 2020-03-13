@@ -29,12 +29,14 @@ private val exampleServiceStatusUsable = ServiceStatusUsable(name = "my-service"
 
 private const val SERVICE_TITLE = "e-shop"
 
+const val FORCE_IN_MEMORY_STORAGE_PROPERTY_NAME = "io.github.servb.eShop"
+
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(inMemoryStorage: Boolean = false) {
     val serviceStartMillis = System.currentTimeMillis()
 
-    storage = when (inMemoryStorage) {
+    storage = when (inMemoryStorage || System.getProperty(FORCE_IN_MEMORY_STORAGE_PROPERTY_NAME) == "true") {
         true -> InMemory()
 
         false -> Db(
