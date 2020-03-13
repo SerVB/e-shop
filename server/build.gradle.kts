@@ -31,10 +31,12 @@ repositories {
     maven { setUrl("https://jitpack.io") }
 }
 
+val exposedVersion: String by project
 val kotlinVersion: String by project
 val ktorVersion: String by project
 val ktorOpenApiGeneratorVersion: String by project
 val logbackVersion: String by project
+val postrgesqlVersion: String by project
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
@@ -43,6 +45,10 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("com.github.papsign:Ktor-OpenAPI-Generator:$ktorOpenApiGeneratorVersion")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    runtimeOnly("org.postgresql:postgresql:$postrgesqlVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 

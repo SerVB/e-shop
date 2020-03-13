@@ -1,15 +1,25 @@
 [![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.61-green.svg)](https://kotlinlang.org/)
 [![Ktor Badge](https://img.shields.io/badge/ktor-1.3.1-green.svg)](https://ktor.io/)
 [![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-0.1--beta.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+[![Exposed Badge](https://img.shields.io/badge/Exposed-0.1--0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 # e-shop
-## Running
+## Running in Docker
 You can run the project easily using Docker:
 ```shell script
 docker-compose up
 ```
 
 After that, you can check Swagger UI at <http://localhost:8080/swagger-ui> for the API description.
+
+## Running locally
+If you want to check it out locally, you should provide database like this:
+```shell script
+docker run -e POSTGRES_PASSWORD=123 -e POSTGRES_USER=user -e POSTGRES_DB=mydb -p 5432:5432 postgres:9.6
+```
+
+After this, you can run `./gradlew run`. Don't forget about setting env like in docker-compose: `DB_USER=user;DB_HOST=localhost;DB_PORT=5432;DB_DB=mydb;DB_PASSWORD=123`.
 
 ## Rules
 - [x] Public repo.
@@ -35,6 +45,6 @@ Rest API:
 
 Extra points:
 - [x] Pagination in list of products.
-- [ ] Data storage in DB.
+- [x] Data storage in DB.
 - [x] Versioning.
 - [x] Logging.

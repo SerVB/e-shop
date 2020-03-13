@@ -10,7 +10,6 @@ import com.papsign.ktor.openapigen.route.path.normal.*
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import io.github.servb.eShop.handler.product.v1.*
-import io.github.servb.eShop.model.Product
 import io.github.servb.eShop.route.product.v1.ProductsParam.Companion.DEFAULT_OFFSET
 import io.github.servb.eShop.route.product.v1.ProductsParam.Companion.MAX_LIMIT
 import io.github.servb.eShop.util.OptionalResult
@@ -93,23 +92,7 @@ data class ProductList(val totalCount: Int, val foundRequestedData: List<Product
 
 @Response("A Product Response.")
 @Request("A Product Request.")
-data class ProductUsable(val name: String, val id: Int, val type: Int) {
-
-    fun toProduct() = Product(
-        name = name,
-        id = id,
-        type = type
-    )
-
-    companion object {
-
-        fun fromProduct(product: Product) = ProductUsable(
-            name = product.name,
-            id = product.id,
-            type = product.type
-        )
-    }
-}
+data class ProductUsable(val name: String, val id: Int, val type: Int)
 
 @Path("{id}")
 data class ProductIdParam(

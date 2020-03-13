@@ -31,8 +31,20 @@ private const val SERVICE_TITLE = "e-shop"
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
-fun Application.module(testing: Boolean = false) {
+fun Application.module(inMemoryStorage: Boolean = false) {
     val serviceStartMillis = System.currentTimeMillis()
+
+    storage = when (inMemoryStorage) {
+        true -> InMemory()
+
+        false -> Db(
+            dbPort = System.getenv("DB_PORT")!!.toInt(),
+            dbUser = System.getenv("DB_USER")!!,
+            dbPassword = System.getenv("DB_PASSWORD")!!,
+            dbHost = System.getenv("DB_HOST")!!,
+            dbDb = System.getenv("DB_DB")!!
+        )
+    }
 
     install(ContentNegotiation) {
         jackson()

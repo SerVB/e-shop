@@ -7,7 +7,7 @@ class ApplicationTest {
     @Test
     fun testRoot() {
         // todo: provide tests
-//        withTestApplication({ module(testing = true) }) {
+//        withTestApplication({ module(inMemoryStorage = true) }) {
 //            handleRequest(HttpMethod.Get, "/").apply {
 //                assertEquals(HttpStatusCode.OK, response.status())
 //                assertEquals("HELLO WORLD!", response.content)
