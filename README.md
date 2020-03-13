@@ -57,3 +57,6 @@ Extra points:
 
 ### 2. 2020.02.15 – 2020.03.15
 - [x] Data storage in DB.
+
+### 3. 2020.03.01 – 2020.03.30
+- [x] Docker-compose.
