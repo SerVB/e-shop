@@ -30,7 +30,7 @@ After this, you can run `./gradlew run`. Don't forget about setting env like in 
 - [x] Docker-compose.
 
 ## Stages
-### 1. 2020.02.08 – 2020.03.07
+### 1. 2020.02.08 – 2020.03.15
 Rest API:
 - [x] Create a product.
 - [x] Remove a product.
