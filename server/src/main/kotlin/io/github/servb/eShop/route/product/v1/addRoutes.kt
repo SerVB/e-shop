@@ -52,7 +52,7 @@ fun NormalOpenAPIRoute.addRoutes() {
             body = { param -> returnProduct(param.id, this::respond) }
         )
 
-        patch<Unit, SuccessResult, ProductUsable>(
+        put<Unit, SuccessResult, ProductUsable>(
             info(
                 summary = "Edit a product.",
                 description = "The product is edited only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been edited."
