@@ -8,15 +8,14 @@ import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
+import io.github.servb.eShop.util.logRequests
+import io.github.servb.eShop.util.logResponses
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.install
-import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
-import io.ktor.request.httpMethod
-import io.ktor.request.uri
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
@@ -39,18 +38,6 @@ fun Application.module(testing: Boolean = false) {
         jackson()
     }
 
-    install(CallLogging) {
-        format { call ->
-            buildString {
-                append(call.request.httpMethod.value)
-                append(" ")
-                append(call.request.uri)
-                append(" - ")
-                append(call.response.status())
-            }
-        }
-    }
-
     install(OpenAPIGen) {
         info {
             version = "1.0-SNAPSHOT"
@@ -63,6 +50,9 @@ fun Application.module(testing: Boolean = false) {
             description = "Local server"
         }
     }
+
+    logRequests()
+    logResponses()
 
     routing {
         get(OPEN_API_JSON_PATH) {
