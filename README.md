@@ -54,3 +54,6 @@ Extra points:
 - [x] Data storage in DB.
 - [x] Versioning.
 - [x] Logging.
+
+### 2. 2020.02.15 – 2020.03.15
+- [x] Data storage in DB.
