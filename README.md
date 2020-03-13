@@ -60,3 +60,10 @@ Extra points:
 
 ### 3. 2020.03.01 – 2020.03.30
 - [x] Docker-compose.
+
+### 4. 2020.03.01 – 2020.03.30
+- [ ] Registration (via login+password).
+- [ ] Auth (change login+password to access+refresh tokens).
+- [ ] A way to change a refresh token to new access+refresh tokens.
+- [ ] Validation endpoint.
+- [ ] All products endpoints must be available only with auth tokens.
