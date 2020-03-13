@@ -31,6 +31,12 @@ private const val SERVICE_TITLE = "e-shop"
 
 const val FORCE_IN_MEMORY_STORAGE_PROPERTY_NAME = "io.github.servb.eShop"
 
+const val DB_PORT_ENV_NAME = "DB_PORT"
+const val DB_USER_ENV_NAME = "DB_USER"
+const val DB_PASSWORD_ENV_NAME = "DB_PASSWORD"
+const val DB_HOST_ENV_NAME = "DB_HOST"
+const val DB_DB_ENV_NAME = "DB_DB"
+
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(inMemoryStorage: Boolean = false) {
@@ -40,11 +46,11 @@ fun Application.module(inMemoryStorage: Boolean = false) {
         true -> InMemory()
 
         false -> Db(
-            dbPort = System.getenv("DB_PORT")!!.toInt(),
-            dbUser = System.getenv("DB_USER")!!,
-            dbPassword = System.getenv("DB_PASSWORD")!!,
-            dbHost = System.getenv("DB_HOST")!!,
-            dbDb = System.getenv("DB_DB")!!
+            dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
+            dbUser = System.getenv(DB_USER_ENV_NAME)!!,
+            dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
+            dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
+            dbDb = System.getenv(DB_DB_ENV_NAME)!!
         )
     }
 
