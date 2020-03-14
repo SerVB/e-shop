@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import kotlin.concurrent.read
 
-suspend fun returnProducts(offset: Int, limit: Int, respond: suspend (OptionalResult<ProductList>) -> Unit) {
+suspend fun returnProducts(offset: Int, limit: Int, respond: suspend (OptionalResult<ProductList?>) -> Unit) {
     val (total, products) = when (val storage = storage) {
         is InMemory -> storage.productsStorageRwLock.read {
             val total = storage.productsStorage.size

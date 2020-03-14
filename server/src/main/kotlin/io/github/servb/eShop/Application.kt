@@ -78,7 +78,7 @@ fun Application.module(inMemoryStorage: Boolean = false) {
 
     routing {
         get(OPEN_API_JSON_PATH) {
-            call.respond(application.openAPIGen.api.build())
+            call.respond(application.openAPIGen.api.serialize())
         }
 
         get("swagger-ui") {

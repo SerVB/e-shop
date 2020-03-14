@@ -1,6 +1,6 @@
 [![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.61-green.svg)](https://kotlinlang.org/)
 [![Ktor Badge](https://img.shields.io/badge/ktor-1.3.1-green.svg)](https://ktor.io/)
-[![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-reworked--model--SNAPSHOT-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+[![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-0d4f589ea49e91f98f8c981d4c011f43578b7796-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 [![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 ![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
