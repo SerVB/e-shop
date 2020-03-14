@@ -2,6 +2,7 @@ FROM openjdk:8 as builder
 
 WORKDIR /root/e-shop
 COPY . .
+RUN chmod +x gradlew
 RUN ./gradlew :server:fatJar
 
 FROM openjdk:8-alpine
