@@ -91,7 +91,7 @@ fun Application.module(inMemoryStorage: Boolean = false) {
             get<Unit, ServiceStatusUsable>(
                 info(
                     summary = "Get service status.",
-                    description = "Returns the name and uptime."
+                    description = "Health check: returns the name and uptime."
                 ),
                 example = exampleServiceStatusUsable
             ) {
