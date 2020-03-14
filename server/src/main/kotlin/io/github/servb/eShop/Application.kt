@@ -1,5 +1,6 @@
 package io.github.servb.eShop
 
+import com.papsign.ktor.openapigen.APITag
 import com.papsign.ktor.openapigen.OpenAPIGen
 import com.papsign.ktor.openapigen.annotations.Response
 import com.papsign.ktor.openapigen.openAPIGen
@@ -8,6 +9,7 @@ import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
+import com.papsign.ktor.openapigen.route.tag
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
 import io.ktor.application.Application
@@ -85,23 +87,33 @@ fun Application.module(inMemoryStorage: Boolean = false) {
     }
 
     apiRouting {
-        get<Unit, ServiceStatusUsable>(
-            info(
-                summary = "Get service status.",
-                description = "Returns the name and uptime."
-            ),
-            example = exampleServiceStatusUsable
-        ) {
-            val uptimeS = System.currentTimeMillis().minus(serviceStartMillis).toDouble().div(1000).roundToInt()
+        tag(Tag.Misc) {
+            get<Unit, ServiceStatusUsable>(
+                info(
+                    summary = "Get service status.",
+                    description = "Returns the name and uptime."
+                ),
+                example = exampleServiceStatusUsable
+            ) {
+                val uptimeS = System.currentTimeMillis().minus(serviceStartMillis).toDouble().div(1000).roundToInt()
 
-            respond(ServiceStatusUsable(name = SERVICE_TITLE, uptime = "${uptimeS}s"))
+                respond(ServiceStatusUsable(name = SERVICE_TITLE, uptime = "${uptimeS}s"))
+            }
         }
 
-        route("v1") {
-            addProductRoutesV1()
+        tag(Tag.V1) {
+            route("v1") {
+                addProductRoutesV1()
+            }
         }
     }
 }
 
 @Response("A Service Status Response.")
 data class ServiceStatusUsable(val name: String, val uptime: String)
+
+enum class Tag(override val description: String) : APITag {
+
+    V1("Version 1 API."),
+    Misc("Unclassified API."),
+}
