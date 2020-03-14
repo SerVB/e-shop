@@ -9,7 +9,7 @@ import io.github.servb.eShop.storage
 import io.github.servb.eShop.util.Do
 import io.github.servb.eShop.util.OptionalResult
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import kotlin.concurrent.read
 
 suspend fun returnProduct(productId: Int, respond: suspend (OptionalResult<ProductUsable?>) -> Unit) {
@@ -18,7 +18,7 @@ suspend fun returnProduct(productId: Int, respond: suspend (OptionalResult<Produ
             storage.productsStorage[productId]?.toProductUsable()
         }
 
-        is Db -> transaction {
+        is Db -> newSuspendedTransaction {
             ProductTable.select { ProductTable.id.eq(productId) }.firstOrNull()?.toProductUsable()
         }
     }

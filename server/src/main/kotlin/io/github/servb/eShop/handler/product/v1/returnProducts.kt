@@ -9,7 +9,7 @@ import io.github.servb.eShop.route.product.v1.ProductList
 import io.github.servb.eShop.storage
 import io.github.servb.eShop.util.OptionalResult
 import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import kotlin.concurrent.read
 
 suspend fun returnProducts(offset: Int, limit: Int, respond: suspend (OptionalResult<ProductList>) -> Unit) {
@@ -28,7 +28,7 @@ suspend fun returnProducts(offset: Int, limit: Int, respond: suspend (OptionalRe
             total to products
         }
 
-        is Db -> transaction {
+        is Db -> newSuspendedTransaction {
             val total = ProductTable.selectAll().count().toInt()
 
             val products = ProductTable

@@ -10,7 +10,7 @@ import io.github.servb.eShop.util.Do
 import io.github.servb.eShop.util.SuccessResult
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import kotlin.concurrent.write
 
 suspend fun createProduct(body: ProductUsable, respond: suspend (SuccessResult) -> Unit) {
@@ -31,7 +31,7 @@ suspend fun createProduct(body: ProductUsable, respond: suspend (SuccessResult) 
             }
         }
 
-        is Db -> transaction {
+        is Db -> newSuspendedTransaction {
             when (ProductTable.select { ProductTable.id.eq(body.id) }.firstOrNull()) {
                 null -> {
                     ProductTable.insert {
