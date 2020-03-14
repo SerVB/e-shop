@@ -29,7 +29,7 @@ private val exampleServiceStatusUsable = ServiceStatusUsable(name = "my-service"
 
 private const val SERVICE_TITLE = "e-shop"
 
-const val FORCE_IN_MEMORY_STORAGE_PROPERTY_NAME = "io.github.servb.eShop"
+const val FORCE_IN_MEMORY_STORAGE_ENV_NAME = "io.github.servb.eShop"
 
 const val DB_PORT_ENV_NAME = "DB_PORT"
 const val DB_USER_ENV_NAME = "DB_USER"
@@ -42,7 +42,7 @@ const val DB_DB_ENV_NAME = "DB_DB"
 fun Application.module(inMemoryStorage: Boolean = false) {
     val serviceStartMillis = System.currentTimeMillis()
 
-    storage = when (inMemoryStorage || System.getProperty(FORCE_IN_MEMORY_STORAGE_PROPERTY_NAME) == "true") {
+    storage = when (inMemoryStorage || System.getenv(FORCE_IN_MEMORY_STORAGE_ENV_NAME) == "true") {
         true -> InMemory()
 
         false -> Db(
