@@ -1,6 +1,5 @@
 package io.github.servb.eShop.route.product.v1
 
-import com.papsign.ktor.openapigen.APIException
 import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
@@ -27,22 +26,18 @@ private val exampleProductUsable = ProductUsable(
 
 private fun <T : OpenAPIRoute<T>> T.throwsSuccessResultNotOk(fn: T.() -> Unit) {
     throws(
-        APIException.apiException(
-            status = HttpStatusCode.BadRequest,
-            example = SuccessResult.NOT_OK,
-            gen = { _: Throwable -> SuccessResult.NOT_OK }
-        ),
+        status = HttpStatusCode.BadRequest,
+        example = SuccessResult.NOT_OK,
+        exClass = Throwable::class,
         fn = fn
     )
 }
 
 private fun <T : OpenAPIRoute<T>> T.throwsOptionalResultNotOk(fn: T.() -> Unit) {
     throws(
-        APIException.apiException(
-            status = HttpStatusCode.BadRequest,
-            example = OptionalResult.NOT_OK,
-            gen = { _: Throwable -> OptionalResult.NOT_OK }
-        ),
+        status = HttpStatusCode.BadRequest,
+        example = OptionalResult.NOT_OK,
+        exClass = Throwable::class,
         fn = fn
     )
 }
