@@ -22,6 +22,8 @@ docker run -e POSTGRES_PASSWORD=123 -e POSTGRES_USER=user -e POSTGRES_DB=mydb -p
 
 After this, you can run `./gradlew run`. Don't forget about setting env like in docker-compose: `DB_USER=user;DB_HOST=localhost;DB_PORT=5432;DB_DB=mydb;DB_PASSWORD=123`.
 
+Another option is to disable database storage. Just run `./gradlew run` with env `io.github.servb.eShop.forceInMemory=true`.
+
 ## Architecture graph
 ![Architecture graph](docs/e-shop-architecture-graph.svg)
 
