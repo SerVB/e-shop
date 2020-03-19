@@ -4,7 +4,7 @@
 [![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 ![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
-[![Build status Badge](https://github.com/SerVB/e-shop/workflows/build/badge.svg)](https://github.com/SerVB/e-shop/actions)
+[![Build status Badge](https://github.com/SerVB/e-shop/workflows/Build/badge.svg)](https://github.com/SerVB/e-shop/actions)
 # e-shop
 ## Running in Docker
 You can run the project easily using Docker:
