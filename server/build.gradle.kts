@@ -20,7 +20,10 @@ application {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
 }
 
 repositories {
@@ -31,7 +34,12 @@ repositories {
     maven { setUrl("https://jitpack.io") }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 val exposedVersion: String by project
+val kotestVersion: String by project
 val kotlinVersion: String by project
 val ktorVersion: String by project
 val ktorOpenApiGeneratorVersion: String by project
@@ -50,6 +58,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     runtimeOnly("org.postgresql:postgresql:$postrgesqlVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
 }
 
 fun inline(provider: Provider<Configuration>) = provider.get().map { if (it.isDirectory) it else zipTree(it) }
