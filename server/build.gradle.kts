@@ -39,6 +39,7 @@ tasks.withType<Test> {
 }
 
 val exposedVersion: String by project
+val gsonVersion: String by project
 val kotestVersion: String by project
 val kotlinVersion: String by project
 val ktorVersion: String by project
@@ -60,6 +61,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
+    testImplementation("com.google.code.gson:gson:$gsonVersion")
 }
 
 fun inline(provider: Provider<Configuration>) = provider.get().map { if (it.isDirectory) it else zipTree(it) }
