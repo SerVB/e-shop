@@ -7,6 +7,8 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.ktor.application.Application
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
@@ -18,6 +20,7 @@ class EShopProductCreateProductTest : BehaviorSpec({
             `when`("I call POST /v1/product") {
                 val call = handleRequest(HttpMethod.Post, "/v1/product") {
                     this.setBody("""{"name": "abc", "id": 123, "type": 1234}""")
+                    this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 }
 
                 then("the response status should be OK") {
