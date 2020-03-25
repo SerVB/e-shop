@@ -1,4 +1,4 @@
-[![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.70-green.svg)](https://kotlinlang.org/)
+[![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.71-green.svg)](https://kotlinlang.org/)
 [![Ktor Badge](https://img.shields.io/badge/ktor-1.3.2-green.svg)](https://ktor.io/)
 [![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-0.2--beta.1--experimental-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 [![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
