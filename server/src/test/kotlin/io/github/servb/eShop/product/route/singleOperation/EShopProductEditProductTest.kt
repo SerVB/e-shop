@@ -18,13 +18,13 @@ class EShopProductEditProductTest : BehaviorSpec({
     given("in-memory e-shop") {
         withTestApplication(Application::inMemoryEShopProduct) {
             `when`("I call PUT nonexistent /v1/product") {
-                val call = handleRequest(HttpMethod.Put, "/v1/product") {
-                    this.setBody("""{"name": "abc", "id": 123, "type": 1234}""")
+                val call = handleRequest(HttpMethod.Put, "/v1/product/20") {
+                    this.setBody("""{"name": "abc", "type": 1234}""")
                     this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 }
 
-                then("the response status should be OK") {
-                    call.response.status() shouldBe HttpStatusCode.OK
+                then("the response status should be NotFound") {
+                    call.response.status() shouldBe HttpStatusCode.NotFound
                 }
 
                 and("I decode the response body") {

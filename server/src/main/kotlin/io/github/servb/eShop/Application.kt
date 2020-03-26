@@ -10,6 +10,7 @@ import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
+import io.github.servb.eShop.route.product.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
 import io.ktor.application.Application
@@ -23,7 +24,6 @@ import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import kotlin.math.roundToInt
-import io.github.servb.eShop.route.product.v1.addRoutes as addProductRoutesV1
 
 private const val OPEN_API_JSON_PATH = "/openapi.json"
 
@@ -103,7 +103,7 @@ fun Application.module(inMemoryStorage: Boolean = false) {
 
         tag(Tag.V1) {
             route("v1") {
-                addProductRoutesV1()
+                addProductV1Routes()
             }
         }
     }

@@ -4,8 +4,9 @@ import io.github.servb.eShop.product.inMemoryEShopProduct
 import io.github.servb.eShop.util.parse
 import io.github.servb.eShop.util.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.maps.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.ktor.application.Application
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -19,7 +20,7 @@ class EShopProductCreateProductTest : BehaviorSpec({
         withTestApplication(Application::inMemoryEShopProduct) {
             `when`("I call POST /v1/product") {
                 val call = handleRequest(HttpMethod.Post, "/v1/product") {
-                    this.setBody("""{"name": "abc", "id": 123, "type": 1234}""")
+                    this.setBody("""{"name": "abc", "type": 1234}""")
                     this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 }
 
@@ -28,10 +29,16 @@ class EShopProductCreateProductTest : BehaviorSpec({
                 }
 
                 and("I decode the response body") {
-                    val responseMap: Map<String, Any?> = call.response.content.parse()
+                    val responseMap: Map<String, Map<String, Any?>> = call.response.content.parse()
 
-                    then("it should have only proper 'ok' field") {
-                        responseMap shouldContainExactly mapOf("ok" to true)
+                    then("it should have only proper 'data' field") {
+                        val data = responseMap["data"]
+
+                        data.shouldNotBeNull()
+
+                        data.size shouldBe 1
+
+                        data["assignedId"].shouldBeTypeOf<Double>()
                     }
                 }
             }

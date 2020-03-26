@@ -1,22 +1,11 @@
 package io.github.servb.eShop.util
 
-import com.papsign.ktor.openapigen.annotations.Response
+interface SuccessResult {
 
-@Response("A Success Result Response.")
-data class SuccessResult(val ok: Boolean) {
-
-    companion object {
-
-        val NOT_OK = SuccessResult(ok = false)
-        val OK = SuccessResult(ok = true)
-    }
+    val ok: Boolean
 }
 
-@Response("An Optional Result Response. Contains `null` in case of a failure and an object otherwise.")
-data class OptionalResult<out T>(val data: T) {
+interface OptionalResult<out ResultType : Any> {
 
-    companion object {
-
-        val NOT_OK = OptionalResult(data = null)
-    }
+    val data: ResultType?
 }

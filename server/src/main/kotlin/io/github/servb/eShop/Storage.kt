@@ -5,6 +5,7 @@ import io.github.servb.eShop.model.ProductTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 lateinit var storage: Storage
@@ -15,6 +16,8 @@ class InMemory : Storage() {
 
     val productsStorage = mutableMapOf<Int, InMemoryProduct>()
     val productsStorageRwLock = ReentrantReadWriteLock()
+
+    val nextId = AtomicInteger()
 }
 
 class Db(

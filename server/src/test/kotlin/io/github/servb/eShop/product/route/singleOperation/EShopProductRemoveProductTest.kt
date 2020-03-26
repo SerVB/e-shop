@@ -17,8 +17,8 @@ class EShopProductRemoveProductTest : BehaviorSpec({
             `when`("I call DELETE nonexistent /v1/product") {
                 val call = handleRequest(HttpMethod.Delete, "/v1/product/5")
 
-                then("the response status should be OK") {
-                    call.response.status() shouldBe HttpStatusCode.OK
+                then("the response status should be NotFound") {
+                    call.response.status() shouldBe HttpStatusCode.NotFound
                 }
 
                 and("I decode the response body") {
