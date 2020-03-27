@@ -26,11 +26,11 @@ import kotlin.concurrent.write
 
 @Path("{id}")
 data class V1ProductPutRequestParams(
-    @PathParam("ID of the product to edit")
+    @PathParam("ID of the product to edit.")
     val id: Int
 )
 
-@Request("Edit product request body")
+@Request("Edit product request body.")
 data class V1ProductPutRequestBody(
     override val name: String,
     override val type: Int
@@ -42,71 +42,48 @@ data class V1ProductPutRequestBody(
     }
 }
 
-@Response("Product edited", statusCode = 200)
+@Response("The product has been edited.", statusCode = 200)
 object V1ProductPutOkResponse : SuccessResult {
     override val ok = true
-}
-
-@Response("ID of the product to edit does not exist", statusCode = 404)
-object V1ProductPutNotFoundResponse : SuccessResult {
-    override val ok = false
-}
-
-@Response("Bad request body", statusCode = 400)
-object V1ProductPutBadRequestResponse : SuccessResult {
-    override val ok = false
 }
 
 fun NormalOpenAPIRoute.editProduct() {
     route("product") {
         throws(
-            status = HttpStatusCode.BadRequest,
-            example = V1ProductPutBadRequestResponse,
-            exClass = Throwable::class
+            status = HttpStatusCode.BadRequest.description("A request body decoding error."),
+            example = SuccessResult.FAIL,
+            exClass = Throwable::class  // todo: select a proper exception for our content negotiation
         ) {
-            put<V1ProductPutRequestParams, SuccessResult, V1ProductPutRequestBody>(
-                info(
-                    summary = "Edit a product.",
-                    description = "The product is edited only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been edited."
-                ),
-                exampleResponse = V1ProductPutOkResponse,
-                exampleRequest = V1ProductPutRequestBody.EXAMPLE
-            ) { params, body ->
-                val result = when (val storage = storage) {
-                    is InMemory -> {
-                        val productToEdit = InMemoryProduct.fromProductWithoutId(params.id, body)
+            throws(
+                status = HttpStatusCode.NotFound.description("The product does not exist."),
+                example = SuccessResult.FAIL,
+                exClass = IllegalArgumentException::class
+            ) {
+                put<V1ProductPutRequestParams, V1ProductPutOkResponse, V1ProductPutRequestBody>(
+                    info(
+                        summary = "Edit a product.",
+                        description = "The product is edited only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been edited."
+                    ),
+                    exampleResponse = V1ProductPutOkResponse,
+                    exampleRequest = V1ProductPutRequestBody.EXAMPLE
+                ) { params, body ->
+                    Do exhaustive when (val storage = storage) {
+                        is InMemory -> storage.productsStorageRwLock.write {
+                            require(params.id in storage.productsStorage)
 
-                        storage.productsStorageRwLock.write {
-                            when (productToEdit.id in storage.productsStorage) {
-                                true -> {
-                                    storage.productsStorage[productToEdit.id] = productToEdit
+                            storage.productsStorage[params.id] = InMemoryProduct.fromProductWithoutId(params.id, body)
+                        }
 
-                                    true
-                                }
+                        is Db -> newSuspendedTransaction {
+                            require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
 
-                                false -> false
+                            ProductTable.update({ ProductTable.id.eq(params.id) }) {
+                                it.fromProductWithoutId(body)
                             }
                         }
                     }
 
-                    is Db -> newSuspendedTransaction {
-                        when (ProductTable.select { ProductTable.id.eq(params.id) }.firstOrNull()) {
-                            null -> false
-
-                            else -> {
-                                ProductTable.update({ ProductTable.id.eq(params.id) }) {
-                                    it.fromProductWithoutId(body)
-                                }
-
-                                true
-                            }
-                        }
-                    }
-                }
-
-                Do exhaustive when (result) {
-                    true -> respond(V1ProductPutOkResponse)
-                    false -> respond(V1ProductPutNotFoundResponse)
+                    respond(V1ProductPutOkResponse)
                 }
             }
         }

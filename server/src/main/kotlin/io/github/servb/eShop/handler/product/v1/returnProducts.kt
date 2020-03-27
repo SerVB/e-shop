@@ -2,8 +2,6 @@ package io.github.servb.eShop.handler.product.v1
 
 import com.papsign.ktor.openapigen.annotations.Response
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
-import com.papsign.ktor.openapigen.annotations.type.number.integer.clamp.Clamp
-import com.papsign.ktor.openapigen.annotations.type.number.integer.min.Min
 import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.get
@@ -22,10 +20,8 @@ import kotlin.concurrent.read
 
 data class V1ProductsGetRequestParams(
     @QueryParam("How many entries to drop. Default is $DEFAULT_OFFSET.")
-    @Min(0)
     val offset: Int?,
     @QueryParam("How many entries to return. Maximum and default is $MAX_LIMIT.")
-    @Clamp(0, MAX_LIMIT.toLong())
     val limit: Int?
 ) {
 
@@ -36,23 +32,23 @@ data class V1ProductsGetRequestParams(
     }
 }
 
-@Response("Always returned", statusCode = 200)
+@Response("Requested data is always returned.", statusCode = 200)
 data class V1ProductsGetOkResponse(
-    override val data: V1ProductsGetOkResponseData
-) : OptionalResult<V1ProductsGetOkResponseData> {
+    override val data: Data
+) : OptionalResult<V1ProductsGetOkResponse.Data> {
 
     companion object {
 
         val EXAMPLE = V1ProductsGetOkResponse(
-            V1ProductsGetOkResponseData(
+            Data(
                 totalCount = 100500,
                 foundRequestedData = listOf(
-                    V1ProductsGetOkResponseDataEntry(
+                    Data.Entry(
                         name = "Socks",
                         id = 42,
                         type = 5
                     ),
-                    V1ProductsGetOkResponseDataEntry(
+                    Data.Entry(
                         name = "T-shirt",
                         id = 53,
                         type = 50
@@ -61,19 +57,20 @@ data class V1ProductsGetOkResponse(
             )
         )
     }
+
+    data class Data(val totalCount: Int, val foundRequestedData: List<ProductWithId>) {
+
+        data class Entry(
+            override val name: String,
+            override val id: Int,
+            override val type: Int
+        ) : ProductWithId
+    }
 }
-
-data class V1ProductsGetOkResponseData(val totalCount: Int, val foundRequestedData: List<ProductWithId>)
-
-data class V1ProductsGetOkResponseDataEntry(
-    override val name: String,
-    override val id: Int,
-    override val type: Int
-) : ProductWithId
 
 fun NormalOpenAPIRoute.returnProducts() {
     route("products") {
-        get<V1ProductsGetRequestParams, OptionalResult<V1ProductsGetOkResponseData>>(
+        get<V1ProductsGetRequestParams, V1ProductsGetOkResponse>(
             info(
                 summary = "Return a list of products.",
                 description = "Returns `${OptionalResult::class.simpleName}` containing the list of products data."
@@ -112,7 +109,7 @@ fun NormalOpenAPIRoute.returnProducts() {
                 }
             }
 
-            respond(V1ProductsGetOkResponse(V1ProductsGetOkResponseData(total, products)))
+            respond(V1ProductsGetOkResponse(V1ProductsGetOkResponse.Data(total, products)))
         }
     }
 }

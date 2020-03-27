@@ -15,13 +15,12 @@ import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductWithoutId
 import io.github.servb.eShop.storage
 import io.github.servb.eShop.util.OptionalResult
-import io.github.servb.eShop.util.SuccessResult
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import kotlin.concurrent.write
 
-@Request("Create product request body")
+@Request("Create product request body.")
 data class V1ProductPostRequestBody(
     override val name: String,
     override val type: Int
@@ -33,35 +32,30 @@ data class V1ProductPostRequestBody(
     }
 }
 
-@Response("Product created", statusCode = 200)
+@Response("The product has been created.", statusCode = 200)
 data class V1ProductPostOkResponse(
-    override val data: V1ProductPostOkResponseData
-) : OptionalResult<V1ProductPostOkResponseData> {
+    override val data: Data
+) : OptionalResult<V1ProductPostOkResponse.Data> {
 
     companion object {
 
-        val EXAMPLE = V1ProductPostOkResponse(V1ProductPostOkResponseData(42))
+        val EXAMPLE = V1ProductPostOkResponse(Data(42))
     }
-}
 
-@Response("Bad request body", statusCode = 400)
-object V1ProductPostBadRequestResponse : OptionalResult<Nothing> {
-    override val data = null
+    data class Data(val id: Int)
 }
-
-data class V1ProductPostOkResponseData(val id: Int)
 
 fun NormalOpenAPIRoute.createProduct() {
     route("product") {
         throws(
-            status = HttpStatusCode.BadRequest,
-            example = V1ProductPostBadRequestResponse,
-            exClass = Throwable::class
+            status = HttpStatusCode.BadRequest.description("A request body decoding error."),
+            example = OptionalResult.FAIL,
+            exClass = Throwable::class  // todo: select a proper exception for our content negotiation
         ) {
-            post<Unit, OptionalResult<V1ProductPostOkResponseData>, V1ProductPostRequestBody>(
+            post<Unit, V1ProductPostOkResponse, V1ProductPostRequestBody>(
                 info(
                     summary = "Create a product.",
-                    description = "Returns `${SuccessResult::class.simpleName}` saying whether the product has been created."
+                    description = "Returns `${OptionalResult::class.simpleName}` saying whether the product has been created."
                 ),
                 exampleResponse = V1ProductPostOkResponse.EXAMPLE,
                 exampleRequest = V1ProductPostRequestBody.EXAMPLE
@@ -87,7 +81,7 @@ fun NormalOpenAPIRoute.createProduct() {
                     }
                 }
 
-                respond(V1ProductPostOkResponse(V1ProductPostOkResponseData(id)))
+                respond(V1ProductPostOkResponse(V1ProductPostOkResponse.Data(id)))
             }
         }
     }
