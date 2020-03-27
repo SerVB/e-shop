@@ -1,5 +1,7 @@
 package io.github.servb.eShop.handler.product.v1
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
@@ -33,6 +35,7 @@ data class V1ProductPutRequestParams(
 @Request("Edit product request body.")
 data class V1ProductPutRequestBody(
     override val name: String,
+    @JsonProperty(required = true)
     override val type: Int
 ) : ProductWithoutId {
 
@@ -52,7 +55,7 @@ fun NormalOpenAPIRoute.editProduct() {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
             example = SuccessResult.FAIL,
-            exClass = Throwable::class  // todo: select a proper exception for our content negotiation
+            exClass = JsonProcessingException::class
         ) {
             throws(
                 status = HttpStatusCode.NotFound.description("The product does not exist."),

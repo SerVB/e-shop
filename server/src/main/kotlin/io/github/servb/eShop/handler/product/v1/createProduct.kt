@@ -1,5 +1,7 @@
 package io.github.servb.eShop.handler.product.v1
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
 import com.papsign.ktor.openapigen.route.info
@@ -23,6 +25,7 @@ import kotlin.concurrent.write
 @Request("Create product request body.")
 data class V1ProductPostRequestBody(
     override val name: String,
+    @JsonProperty(required = true)
     override val type: Int
 ) : ProductWithoutId {
 
@@ -50,7 +53,7 @@ fun NormalOpenAPIRoute.createProduct() {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
             example = OptionalResult.FAIL,
-            exClass = Throwable::class  // todo: select a proper exception for our content negotiation
+            exClass = JsonProcessingException::class
         ) {
             post<Unit, V1ProductPostOkResponse, V1ProductPostRequestBody>(
                 info(
