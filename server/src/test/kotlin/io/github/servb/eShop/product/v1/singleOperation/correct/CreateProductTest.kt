@@ -1,12 +1,10 @@
-package io.github.servb.eShop.product.route.singleOperation
+package io.github.servb.eShop.product.v1.singleOperation.correct
 
 import io.github.servb.eShop.product.inMemoryEShopProduct
-import io.github.servb.eShop.util.parse
-import io.github.servb.eShop.util.withTestApplication
+import io.github.servb.eShop.util.kotest.*
+import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeTypeOf
 import io.ktor.application.Application
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -15,7 +13,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 
-class EShopProductCreateProductTest : BehaviorSpec({
+class CreateProductTest : BehaviorSpec({
     given("in-memory e-shop") {
         withTestApplication(Application::inMemoryEShopProduct) {
             `when`("I call POST /v1/product") {
@@ -28,18 +26,10 @@ class EShopProductCreateProductTest : BehaviorSpec({
                     call.response.status() shouldBe HttpStatusCode.OK
                 }
 
-                and("I decode the response body") {
-                    val responseMap: Map<String, Map<String, Any?>> = call.response.content.parse()
-
-                    then("it should have only proper 'data' field") {
-                        val data = responseMap["data"]
-
-                        data.shouldNotBeNull()
-
-                        data.size shouldBe 1
-
-                        data["assignedId"].shouldBeTypeOf<Double>()
-                    }
+                then("the response body should have only proper 'data' field") {
+                    call.response.content
+                        .shouldContainOnlyJsonKey("data")
+                        .shouldContainOnlyJsonKeyAndValueOfSpecificType<Int>("id")
                 }
             }
         }

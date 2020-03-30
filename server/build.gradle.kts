@@ -46,6 +46,7 @@ val ktorVersion: String by project
 val ktorOpenApiGeneratorVersion: String by project
 val logbackVersion: String by project
 val postrgesqlVersion: String by project
+val jsonPathVersion: String by project
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
@@ -61,7 +62,8 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
-    testImplementation("com.google.code.gson:gson:$gsonVersion")
+    testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
+    testImplementation("com.jayway.jsonpath:json-path:$jsonPathVersion")
 }
 
 fun inline(provider: Provider<Configuration>) = provider.get().map { if (it.isDirectory) it else zipTree(it) }

@@ -2,14 +2,13 @@ package io.github.servb.eShop
 
 import com.papsign.ktor.openapigen.APITag
 import com.papsign.ktor.openapigen.OpenAPIGen
+import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.Response
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.openAPIGen
-import com.papsign.ktor.openapigen.route.apiRouting
-import com.papsign.ktor.openapigen.route.info
+import com.papsign.ktor.openapigen.route.*
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
-import com.papsign.ktor.openapigen.route.route
-import com.papsign.ktor.openapigen.route.tag
 import io.github.servb.eShop.route.product.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
@@ -18,6 +17,7 @@ import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
+import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect

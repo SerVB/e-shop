@@ -1,17 +1,16 @@
-package io.github.servb.eShop.product.route.singleOperation
+package io.github.servb.eShop.product.v1.singleOperation.correct
 
 import io.github.servb.eShop.product.inMemoryEShopProduct
-import io.github.servb.eShop.util.parse
-import io.github.servb.eShop.util.withTestApplication
+import io.github.servb.eShop.util.kotest.shouldMatchJson
+import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.ktor.application.Application
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 
-class EShopProductRemoveProductTest : BehaviorSpec({
+class RemoveProductTest : BehaviorSpec({
     given("in-memory e-shop") {
         withTestApplication(Application::inMemoryEShopProduct) {
             `when`("I call DELETE nonexistent /v1/product") {
@@ -21,12 +20,8 @@ class EShopProductRemoveProductTest : BehaviorSpec({
                     call.response.status() shouldBe HttpStatusCode.NotFound
                 }
 
-                and("I decode the response body") {
-                    val responseMap: Map<String, Any?> = call.response.content.parse()
-
-                    then("it should have only proper 'ok' field") {
-                        responseMap shouldContainExactly mapOf("ok" to false)
-                    }
+                then("the response body should have only proper 'ok' field") {
+                    call.response.content shouldMatchJson """{"ok": false}"""
                 }
             }
         }

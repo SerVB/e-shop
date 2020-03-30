@@ -1,17 +1,18 @@
-package io.github.servb.eShop.product.route.singleOperation
+package io.github.servb.eShop.product.v1.singleOperation.correct
 
 import io.github.servb.eShop.product.inMemoryEShopProduct
-import io.github.servb.eShop.util.parse
-import io.github.servb.eShop.util.withTestApplication
+import io.github.servb.eShop.util.kotest.shouldMatchJson
+import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.maps.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.application.Application
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 
-class EShopProductReturnProductsTest : BehaviorSpec({
+class ReturnProductsTest : BehaviorSpec({
     given("in-memory e-shop") {
         withTestApplication(Application::inMemoryEShopProduct) {
             `when`("I call GET /v1/products") {
@@ -21,17 +22,8 @@ class EShopProductReturnProductsTest : BehaviorSpec({
                     call.response.status() shouldBe HttpStatusCode.OK
                 }
 
-                and("I decode the response body") {
-                    val responseMap: Map<String, Any?> = call.response.content.parse()
-
-                    then("it should have only proper 'data' field") {
-                        responseMap shouldContainExactly mapOf(
-                            "data" to mapOf(
-                                "totalCount" to 0.0,
-                                "foundRequestedData" to emptyList<Nothing>()
-                            )
-                        )
-                    }
+                then("the response body should have only proper 'data' field") {
+                    call.response.content shouldMatchJson """{"data": {"totalCount": 0, "foundRequestedData": []}}"""
                 }
             }
         }
