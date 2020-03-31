@@ -9,6 +9,8 @@ import com.papsign.ktor.openapigen.openAPIGen
 import com.papsign.ktor.openapigen.route.*
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
+import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
+import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
 import io.github.servb.eShop.route.product.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
@@ -24,6 +26,7 @@ import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import kotlin.math.roundToInt
+import kotlin.reflect.KType
 
 private const val OPEN_API_JSON_PATH = "/openapi.json"
 
@@ -71,6 +74,15 @@ fun Application.module(inMemoryStorage: Boolean = false) {
         server("http://localhost:8080/") {
             description = "Local server"
         }
+
+        //rename DTOs from java type name to generator compatible form
+        replaceModule(DefaultSchemaNamer, object : SchemaNamer {
+            val regex = Regex("[A-Za-z0-9_.]+")
+
+            override fun get(type: KType): String {
+                return type.toString().replace(regex) { it.value.split(".").last() }.replace(Regex(">|<|, "), "_")
+            }
+        })
     }
 
     logRequests()
