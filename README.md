@@ -37,7 +37,7 @@ Another option is to disable database storage. Just run `./gradlew run` with env
 - [x] Docker-compose.
 
 ## Stages
-### 1. 2020.02.08 – 2020.03.15
+### 1. 2020.02.08
 Rest API:
 - [x] Create a product.
 - [x] Remove a product.
@@ -56,13 +56,13 @@ Extra points:
 - [x] Versioning.
 - [x] Logging.
 
-### 2. 2020.02.15 – 2020.03.15
+### 2. 2020.02.15
 - [x] Data storage in DB.
 
-### 3. 2020.03.01 – 2020.03.30
+### 3. 2020.03.01
 - [x] Docker-compose.
 
-### 4. 2020.03.01 – 2020.03.30
+### 4. 2020.03.01
 - [ ] Registration (via login+password).
 - [ ] Auth (change login+password to access+refresh tokens).
 - [ ] A way to change a refresh token to new access+refresh tokens.
