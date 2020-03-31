@@ -4,8 +4,8 @@
 /.idea/
 /out/
 /build/
-/server/out/
-/server/build/
+/product/out/
+/product/build/
 /.gitignore
 /Dockerfile
 /docker-compose.yml

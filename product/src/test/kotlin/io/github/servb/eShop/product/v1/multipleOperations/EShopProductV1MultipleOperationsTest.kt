@@ -3,7 +3,10 @@
 package io.github.servb.eShop.product.v1.multipleOperations
 
 import io.github.servb.eShop.product.inMemoryEShopProduct
-import io.github.servb.eShop.util.kotest.*
+import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
+import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
+import io.github.servb.eShop.util.kotest.shouldMatchJson
+import io.github.servb.eShop.util.kotest.thenWithContract
 import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.GivenContext

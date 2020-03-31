@@ -3,12 +3,12 @@ FROM openjdk:8 as builder
 WORKDIR /root/e-shop
 COPY . .
 RUN chmod +x gradlew
-RUN ./gradlew :server:fatJar
+RUN ./gradlew :product:fatJar
 
 FROM openjdk:8-alpine
 
 WORKDIR /root/e-shop
 
-COPY --from=builder /root/e-shop/server/build/libs/server-fat-1.0-SNAPSHOT.jar server.jar
+COPY --from=builder /root/e-shop/product/build/libs/product-fat-1.0-SNAPSHOT.jar product.jar
 
-CMD ["java", "-jar", "server.jar"]
+CMD ["java", "-jar", "product.jar"]

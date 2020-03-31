@@ -1,7 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.incorrect
 
 import io.github.servb.eShop.product.inMemoryEShopProduct
-import io.github.servb.eShop.util.*
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec

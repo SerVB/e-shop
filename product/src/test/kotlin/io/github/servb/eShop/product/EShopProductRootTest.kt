@@ -25,7 +25,7 @@ class EShopProductRootTest : BehaviorSpec({
 
                     responseJson shouldContainExactly 2.jsonKeyValueEntries
 
-                    responseJson.shouldContainJsonKeyValue("name", "e-shop")
+                    responseJson.shouldContainJsonKeyValue("name", "e-shop-product")
 
                     val uptime: String = responseJson shouldContainJsonKeyAndValueOfSpecificType "uptime"
 

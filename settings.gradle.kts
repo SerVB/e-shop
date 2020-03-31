@@ -14,4 +14,4 @@ pluginManagement {
 
 rootProject.name = "e-shop"
 
-include("server")
+include("product")

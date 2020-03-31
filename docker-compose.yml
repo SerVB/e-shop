@@ -11,7 +11,7 @@ services:
     networks:
       - mynetwork
 
-  app:
+  e-shop-product:
     build: .
     environment:
       DB_PORT: 5432

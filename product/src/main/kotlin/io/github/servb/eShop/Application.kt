@@ -2,13 +2,14 @@ package io.github.servb.eShop
 
 import com.papsign.ktor.openapigen.APITag
 import com.papsign.ktor.openapigen.OpenAPIGen
-import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.Response
-import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.openAPIGen
-import com.papsign.ktor.openapigen.route.*
+import com.papsign.ktor.openapigen.route.apiRouting
+import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
+import com.papsign.ktor.openapigen.route.route
+import com.papsign.ktor.openapigen.route.tag
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
 import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
 import io.github.servb.eShop.route.product.v1.addProductV1Routes
@@ -19,7 +20,6 @@ import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
-import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
@@ -32,7 +32,7 @@ private const val OPEN_API_JSON_PATH = "/openapi.json"
 
 private val exampleServiceStatusUsable = ServiceStatusUsable(name = "my-service", uptime = "123s")
 
-private const val SERVICE_TITLE = "e-shop"
+private const val SERVICE_TITLE = "e-shop-product"
 
 const val FORCE_IN_MEMORY_STORAGE_ENV_NAME = "io.github.servb.eShop.forceInMemory"
 
