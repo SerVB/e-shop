@@ -35,8 +35,18 @@ class Db(
             password = dbPassword
         )
 
-        transaction {
-            SchemaUtils.createMissingTablesAndColumns(ProductTable)
+        while (true) {
+            try {
+                transaction {
+                    SchemaUtils.createMissingTablesAndColumns(ProductTable)
+                }
+
+                break
+            } catch (e: Throwable) {
+                println("Waiting for db...")
+
+                Thread.sleep(1000)
+            }
         }
     }
 }
