@@ -49,6 +49,7 @@ val postrgesqlVersion: String by project
 val jsonPathVersion: String by project
 
 dependencies {
+    implementation(project(":server-util"))
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -59,6 +60,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     runtimeOnly("org.postgresql:postgresql:$postrgesqlVersion")
+    testImplementation(project(":server-util-test"))
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")

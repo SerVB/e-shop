@@ -1,6 +1,4 @@
 /.gradle/
 /.idea/
-/out/
-/build/
-/product/out/
-/product/build/
+out
+build

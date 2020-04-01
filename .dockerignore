@@ -2,10 +2,8 @@
 /.github/
 /.gradle/
 /.idea/
-/out/
-/build/
-/product/out/
-/product/build/
+out
+build
 /.gitignore
 /Dockerfile
 /docker-compose.yml
