@@ -2,27 +2,54 @@ version: "3"
 
 services:
 
-  db:
+  db-product:
     image: postgres:9.6
     environment:
-      POSTGRES_PASSWORD: 123
-      POSTGRES_USER: user
-      POSTGRES_DB: mydb
+      POSTGRES_PASSWORD: product123
+      POSTGRES_USER: productuser
+      POSTGRES_DB: productmydb
     networks:
-      - mynetwork
+      - productnetwork
 
   e-shop-product:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-product
     environment:
       DB_PORT: 5432
-      DB_DB: mydb
-      DB_USER: user
-      DB_PASSWORD: 123
-      DB_HOST: db
+      DB_DB: productmydb
+      DB_USER: productuser
+      DB_PASSWORD: product123
+      DB_HOST: db-product
     ports:
       - "8080:8080"
     networks:
-      - mynetwork
+      - productnetwork
+
+  db-auth:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: auth123
+      POSTGRES_USER: authuser
+      POSTGRES_DB: authmydb
+    networks:
+      - authnetwork
+
+  e-shop-auth:
+    build:
+      context: .
+      dockerfile: Dockerfile-auth
+    environment:
+      DB_PORT: 5432
+      DB_DB: authmydb
+      DB_USER: authuser
+      DB_PASSWORD: auth123
+      DB_HOST: db-auth
+    ports:
+      - "8081:8081"
+    networks:
+      - authnetwork
 
 networks:
-  mynetwork:
+  productnetwork:
+  authnetwork:

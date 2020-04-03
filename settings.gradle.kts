@@ -14,6 +14,7 @@ pluginManagement {
 
 rootProject.name = "e-shop"
 
+include("auth")
 include("product")
 include("server-util")
 include("server-util-test")

@@ -1,0 +1,25 @@
+' C4 with PlantUML at kroki.io
+
+@startuml
+!include C4_Container.puml
+
+LAYOUT_TOP_DOWN
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for e-shop
+
+Person(user, User, "A user of e-shop")
+
+System_Boundary(e_shop, "e-shop") {
+    Container(e_shop_product_api, "e-shop-product API Application", "Kotlin, Ktor", "Provides e-shop products functionality via REST API")
+    Container(e_shop_auth_api, "e-shop-auth API Application", "Kotlin, Ktor", "Provides e-shop auth functionality via REST API")
+    ContainerDb(db_product, "Product Database", "PostgreSQL", "Stores products information")
+    ContainerDb(db_auth, "Auth Database", "PostgreSQL", "Stores user registration information and auth sessions")
+}
+
+Rel(user, e_shop_product_api, "Works with products", "8080 port, JSON/HTTP")
+Rel(user, e_shop_auth_api, "Works with auth", "8081 port, JSON/HTTP")
+
+Rel(e_shop_product_api, db_product, "Reads from and writes to", "5432 port, Exposed+JDBC, productnetwork")
+Rel(e_shop_auth_api, db_auth, "Reads from and writes to", "5432 port, Exposed+JDBC, authnetwork")
+@enduml
