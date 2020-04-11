@@ -34,8 +34,6 @@ private val exampleServiceStatusUsable = ServiceStatusUsable(name = "my-service"
 
 private const val SERVICE_TITLE = "e-shop-product"
 
-const val FORCE_IN_MEMORY_STORAGE_ENV_NAME = "io.github.servb.eShop.forceInMemory"
-
 const val DB_PORT_ENV_NAME = "DB_PORT"
 const val DB_USER_ENV_NAME = "DB_USER"
 const val DB_PASSWORD_ENV_NAME = "DB_PASSWORD"
@@ -43,21 +41,30 @@ const val DB_HOST_ENV_NAME = "DB_HOST"
 const val DB_DB_ENV_NAME = "DB_DB"
 
 @Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
-fun Application.module(inMemoryStorage: Boolean = false) {
+fun Application.module() = module(
+    dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
+    dbUser = System.getenv(DB_USER_ENV_NAME)!!,
+    dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
+    dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
+    dbDb = System.getenv(DB_DB_ENV_NAME)!!
+)
+
+fun Application.module(
+    dbPort: Int,
+    dbUser: String,
+    dbPassword: String,
+    dbHost: String,
+    dbDb: String
+) {
     val serviceStartMillis = System.currentTimeMillis()
 
-    storage = when (inMemoryStorage || System.getenv(FORCE_IN_MEMORY_STORAGE_ENV_NAME) == "true") {
-        true -> InMemory()
-
-        false -> Db(
-            dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
-            dbUser = System.getenv(DB_USER_ENV_NAME)!!,
-            dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
-            dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
-            dbDb = System.getenv(DB_DB_ENV_NAME)!!
-        )
-    }
+    val connection = DatabaseConnection(
+        dbPort = dbPort,
+        dbUser = dbUser,
+        dbPassword = dbPassword,
+        dbHost = dbHost,
+        dbDb = dbDb
+    )
 
     install(ContentNegotiation) {
         jackson()
@@ -115,7 +122,7 @@ fun Application.module(inMemoryStorage: Boolean = false) {
 
         tag(Tag.V1) {
             route("v1") {
-                addProductV1Routes()
+                addProductV1Routes(connection.database)
             }
         }
     }

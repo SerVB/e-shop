@@ -7,16 +7,13 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
-import io.github.servb.eShop.Db
-import io.github.servb.eShop.InMemory
 import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductTable.toProductWithId
 import io.github.servb.eShop.model.ProductWithId
-import io.github.servb.eShop.storage
 import io.github.servb.eShop.util.OptionalResult
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import kotlin.concurrent.read
 
 data class V1ProductsGetRequestParams(
     @QueryParam("How many entries to drop. Default is $DEFAULT_OFFSET.")
@@ -68,7 +65,7 @@ data class V1ProductsGetOkResponse(
     }
 }
 
-fun NormalOpenAPIRoute.returnProducts() {
+fun NormalOpenAPIRoute.returnProducts(database: Database) {
     route("products") {
         get<V1ProductsGetRequestParams, V1ProductsGetOkResponse>(
             info(
@@ -83,30 +80,15 @@ fun NormalOpenAPIRoute.returnProducts() {
             val offsetInRange = maxOf(0, offset)
             val limitInRange = maxOf(0, minOf(limit, V1ProductsGetRequestParams.MAX_LIMIT))
 
-            val (total, products) = when (val storage = storage) {
-                is InMemory -> storage.productsStorageRwLock.read {
-                    val total = storage.productsStorage.size
+            val (total, products) = newSuspendedTransaction(db = database) {
+                val total = ProductTable.selectAll().count().toInt()
 
-                    val products = storage.productsStorage
-                        .asSequence()
-                        .map { it.value }
-                        .drop(offsetInRange)
-                        .take(limitInRange)
-                        .toList()
+                val products = ProductTable
+                    .selectAll()
+                    .limit(n = limitInRange, offset = offsetInRange.toLong())
+                    .map { it.toProductWithId() }
 
-                    total to products
-                }
-
-                is Db -> newSuspendedTransaction {
-                    val total = ProductTable.selectAll().count().toInt()
-
-                    val products = ProductTable
-                        .selectAll()
-                        .limit(n = limitInRange, offset = offsetInRange.toLong())
-                        .map { it.toProductWithId() }
-
-                    total to products
-                }
+                total to products
             }
 
             respond(V1ProductsGetOkResponse(V1ProductsGetOkResponse.Data(total, products)))

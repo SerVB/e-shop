@@ -1,6 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.correct
 
-import io.github.servb.eShop.product.inMemoryEShopProduct
+import io.github.servb.eShop.product.testContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
 import io.github.servb.eShop.util.ktor.withTestApplication
@@ -16,7 +16,7 @@ import io.ktor.server.testing.setBody
 
 class CreateProductTest : BehaviorSpec({
     given("in-memory e-shop") {
-        withTestApplication(Application::inMemoryEShopProduct) {
+        withTestApplication(Application::testContainerEShopProduct) {
             `when`("I call POST /v1/product") {
                 val call = handleRequest(HttpMethod.Post, "/v1/product") {
                     this.setBody("""{"name": "abc", "type": 1234}""")

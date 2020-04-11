@@ -12,7 +12,7 @@ import io.ktor.server.testing.handleRequest
 
 class EShopProductRootTest : BehaviorSpec({
     given("in-memory e-shop") {
-        withTestApplication(Application::inMemoryEShopProduct) {
+        withTestApplication(Application::testContainerEShopProduct) {
             `when`("I call GET /") {
                 val call = handleRequest(HttpMethod.Get, "/")
 
