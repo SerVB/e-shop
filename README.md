@@ -4,6 +4,7 @@
 [![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 [![Kotest Badge](https://img.shields.io/badge/kotest-4.0.2-green.svg)](https://github.com/kotest/kotest)
 ![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
+[![testcontainrs Badge](https://img.shields.io/badge/testcontainers-1.13.0-blue.svg)](https://www.testcontainers.org/)
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 [![Build status Badge](https://github.com/SerVB/e-shop/workflows/Build/badge.svg)](https://github.com/SerVB/e-shop/actions)
 [![Tests status Badge](https://github.com/SerVB/e-shop/workflows/Tests/badge.svg)](https://github.com/SerVB/e-shop/actions)
