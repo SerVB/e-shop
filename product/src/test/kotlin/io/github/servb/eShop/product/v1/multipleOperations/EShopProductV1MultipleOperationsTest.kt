@@ -60,7 +60,7 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                         call.response.status() shouldBe HttpStatusCode.OK
                     }
 
-                    val secondId: Int
+                    var secondId: Int  // todo: it should be val, but val doesn't work here
 
                     thenWithContract("the response body should have proper 'data' field") {
                         secondId = call.response.content
