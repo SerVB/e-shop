@@ -2,7 +2,7 @@
 
 package io.github.servb.eShop.product.v1.multipleOperations
 
-import io.github.servb.eShop.product.inMemoryEShopProduct
+import io.github.servb.eShop.product.testContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
 import io.github.servb.eShop.util.kotest.shouldMatchJson
@@ -23,7 +23,7 @@ import io.ktor.server.testing.setBody
 
 class EShopProductV1MultipleOperationsTest : BehaviorSpec({
     given("in-memory e-shop") {
-        withTestApplication(Application::inMemoryEShopProduct) {
+        withTestApplication(Application::testContainerEShopProduct) {
             makeThreePosts(this)
         }
     }

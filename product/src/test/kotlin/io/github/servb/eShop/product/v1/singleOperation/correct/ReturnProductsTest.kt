@@ -1,6 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.correct
 
-import io.github.servb.eShop.product.inMemoryEShopProduct
+import io.github.servb.eShop.product.testContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
@@ -12,7 +12,7 @@ import io.ktor.server.testing.handleRequest
 
 class ReturnProductsTest : BehaviorSpec({
     given("in-memory e-shop") {
-        withTestApplication(Application::inMemoryEShopProduct) {
+        withTestApplication(Application::testContainerEShopProduct) {
             `when`("I call GET /v1/products") {
                 val call = handleRequest(HttpMethod.Get, "/v1/products")
 

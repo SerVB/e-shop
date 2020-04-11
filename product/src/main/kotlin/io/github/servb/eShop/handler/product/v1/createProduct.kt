@@ -10,17 +10,13 @@ import com.papsign.ktor.openapigen.route.path.normal.post
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
-import io.github.servb.eShop.Db
-import io.github.servb.eShop.InMemory
-import io.github.servb.eShop.model.InMemoryProduct
 import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductWithoutId
-import io.github.servb.eShop.storage
 import io.github.servb.eShop.util.OptionalResult
 import io.ktor.http.HttpStatusCode
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import kotlin.concurrent.write
 
 @Request("Create product request body.")
 data class V1ProductPostRequestBody(
@@ -48,7 +44,7 @@ data class V1ProductPostOkResponse(
     data class Data(val id: Int)
 }
 
-fun NormalOpenAPIRoute.createProduct() {
+fun NormalOpenAPIRoute.createProduct(database: Database) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
@@ -63,25 +59,8 @@ fun NormalOpenAPIRoute.createProduct() {
                 exampleResponse = V1ProductPostOkResponse.EXAMPLE,
                 exampleRequest = V1ProductPostRequestBody.EXAMPLE
             ) { _, body ->
-                val id = when (val storage = storage) {
-                    is InMemory -> {
-                        val id = storage.nextId.getAndIncrement()
-                        val productToCreate = InMemoryProduct.fromProductWithoutId(id, body)
-
-                        storage.productsStorageRwLock.write {
-                            storage.productsStorage[productToCreate.id] = productToCreate
-                        }
-
-                        id
-                    }
-
-                    is Db -> newSuspendedTransaction {
-                        ProductTable
-                            .insertAndGetId {
-                                it.fromProductWithoutId(body)
-                            }
-                            .value
-                    }
+                val id = newSuspendedTransaction(db = database) {
+                    ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value
                 }
 
                 respond(V1ProductPostOkResponse(V1ProductPostOkResponse.Data(id)))

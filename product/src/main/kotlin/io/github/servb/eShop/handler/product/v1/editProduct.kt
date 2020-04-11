@@ -12,19 +12,14 @@ import com.papsign.ktor.openapigen.route.path.normal.put
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
-import io.github.servb.eShop.Db
-import io.github.servb.eShop.InMemory
-import io.github.servb.eShop.model.InMemoryProduct
 import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductWithoutId
-import io.github.servb.eShop.storage
-import io.github.servb.eShop.util.Do
 import io.github.servb.eShop.util.SuccessResult
 import io.ktor.http.HttpStatusCode
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
-import kotlin.concurrent.write
 
 @Path("{id}")
 data class V1ProductPutRequestParams(
@@ -50,7 +45,7 @@ object V1ProductPutOkResponse : SuccessResult {
     override val ok = true
 }
 
-fun NormalOpenAPIRoute.editProduct() {
+fun NormalOpenAPIRoute.editProduct(database: Database) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
@@ -70,19 +65,11 @@ fun NormalOpenAPIRoute.editProduct() {
                     exampleResponse = V1ProductPutOkResponse,
                     exampleRequest = V1ProductPutRequestBody.EXAMPLE
                 ) { params, body ->
-                    Do exhaustive when (val storage = storage) {
-                        is InMemory -> storage.productsStorageRwLock.write {
-                            require(params.id in storage.productsStorage)
+                    newSuspendedTransaction(db = database) {
+                        require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
 
-                            storage.productsStorage[params.id] = InMemoryProduct.fromProductWithoutId(params.id, body)
-                        }
-
-                        is Db -> newSuspendedTransaction {
-                            require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
-
-                            ProductTable.update({ ProductTable.id.eq(params.id) }) {
-                                it.fromProductWithoutId(body)
-                            }
+                        ProductTable.update({ ProductTable.id.eq(params.id) }) {
+                            it.fromProductWithoutId(body)
                         }
                     }
 

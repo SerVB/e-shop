@@ -15,22 +15,6 @@ interface ProductWithId : ProductWithoutId {
     val id: Int
 }
 
-data class InMemoryProduct(
-    override val name: String,
-    override val id: Int,
-    override val type: Int
-) : ProductWithId {
-
-    companion object {
-
-        fun fromProductWithoutId(productId: Int, product: ProductWithoutId) = InMemoryProduct(
-            name = product.name,
-            id = productId,
-            type = product.type
-        )
-    }
-}
-
 object ProductTable : IntIdTable() {
     private val name = varchar("name", 50)
     private val type = integer("type")

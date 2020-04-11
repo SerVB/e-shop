@@ -1,6 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.incorrect
 
-import io.github.servb.eShop.product.inMemoryEShopProduct
+import io.github.servb.eShop.product.testContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
@@ -17,7 +17,7 @@ import io.ktor.server.testing.setBody
 
 class CreateProductTest : BehaviorSpec({
     given("in-memory e-shop") {
-        withTestApplication(Application::inMemoryEShopProduct) {
+        withTestApplication(Application::testContainerEShopProduct) {
             forAll(
                 row(""),
                 row("{"),

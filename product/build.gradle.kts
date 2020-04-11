@@ -47,6 +47,7 @@ val ktorOpenApiGeneratorVersion: String by project
 val logbackVersion: String by project
 val postrgesqlVersion: String by project
 val jsonPathVersion: String by project
+val testcontainersVersion: String by project
 
 dependencies {
     implementation(project(":server-util"))
@@ -66,6 +67,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
     testImplementation("com.jayway.jsonpath:json-path:$jsonPathVersion")
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
 }
 
 fun inline(provider: Provider<Configuration>) = provider.get().map { if (it.isDirectory) it else zipTree(it) }
