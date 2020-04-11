@@ -1,9 +1,13 @@
 package io.github.servb.eShop.product
 
-import io.github.servb.eShop.util.kotest.*
+import io.github.servb.eShop.util.kotest.jsonKeyValueEntries
+import io.github.servb.eShop.util.kotest.shouldContainExactly
+import io.github.servb.eShop.util.kotest.shouldContainJsonKeyAndValueOfSpecificType
+import io.github.servb.eShop.util.kotest.shouldContainJsonKeyValue
 import io.github.servb.eShop.util.ktor.withTestApplication
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeInteger
 import io.kotest.matchers.string.shouldEndWith
 import io.ktor.application.Application
 import io.ktor.http.HttpMethod
