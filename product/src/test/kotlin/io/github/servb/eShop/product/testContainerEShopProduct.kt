@@ -2,10 +2,14 @@ package io.github.servb.eShop.product
 
 import io.github.servb.eShop.module
 import io.github.servb.eShop.util.POSTGRES_CONTAINER_NAME
+import io.github.servb.eShop.util.ktor.withTestApplication
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.GivenContext
 import io.ktor.application.Application
+import io.ktor.server.testing.TestApplicationEngine
 import org.testcontainers.containers.PostgreSQLContainer
 
-fun Application.testContainerEShopProduct() {
+private fun Application.testContainerEShopProduct() {
     val container = PostgreSQLContainer<Nothing>(POSTGRES_CONTAINER_NAME).apply {
         start()
     }
@@ -17,4 +21,12 @@ fun Application.testContainerEShopProduct() {
         dbHost = container.containerIpAddress,
         dbDb = container.databaseName
     )
+}
+
+fun BehaviorSpec.givenTestContainerEShopProduct(test: suspend GivenContext.(TestApplicationEngine) -> Unit) {
+    given("test container e-shop-product") {
+        withTestApplication(Application::testContainerEShopProduct) {
+            this@given.test(this)
+        }
+    }
 }
