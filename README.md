@@ -6,6 +6,7 @@
 ![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 [![Build status Badge](https://github.com/SerVB/e-shop/workflows/Build/badge.svg)](https://github.com/SerVB/e-shop/actions)
+[![Tests status Badge](https://github.com/SerVB/e-shop/workflows/Tests/badge.svg)](https://github.com/SerVB/e-shop/actions)
 # e-shop
 ## Running in Docker
 You can run the project easily using Docker:
