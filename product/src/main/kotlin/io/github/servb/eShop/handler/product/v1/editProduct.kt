@@ -57,30 +57,25 @@ fun NormalOpenAPIRoute.editProduct(database: Database) {
                 example = SuccessResult.FAIL,
                 exClass = IllegalArgumentException::class
             ) {
-                put(database)
+                put<V1ProductPutRequestParams, V1ProductPutOkResponse, V1ProductPutRequestBody>(
+                    info(
+                        summary = "Edit a product.",
+                        description = "The product is edited only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been edited."
+                    ),
+                    exampleResponse = V1ProductPutOkResponse,
+                    exampleRequest = V1ProductPutRequestBody.EXAMPLE
+                ) { params, body ->
+                    newSuspendedTransaction(db = database) {
+                        require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
+
+                        ProductTable.update({ ProductTable.id.eq(params.id) }) {
+                            it.fromProductWithoutId(body)
+                        }
+                    }
+
+                    respond(V1ProductPutOkResponse)
+                }
             }
         }
-    }
-}
-
-// todo: revert function extraction when https://youtrack.jetbrains.com/issue/KT-38197 is resolved
-private fun NormalOpenAPIRoute.put(database: Database) {
-    put<V1ProductPutRequestParams, V1ProductPutOkResponse, V1ProductPutRequestBody>(
-        info(
-            summary = "Edit a product.",
-            description = "The product is edited only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been edited."
-        ),
-        exampleResponse = V1ProductPutOkResponse,
-        exampleRequest = V1ProductPutRequestBody.EXAMPLE
-    ) { params, body ->
-        newSuspendedTransaction(db = database) {
-            require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
-
-            ProductTable.update({ ProductTable.id.eq(params.id) }) {
-                it.fromProductWithoutId(body)
-            }
-        }
-
-        respond(V1ProductPutOkResponse)
     }
 }
