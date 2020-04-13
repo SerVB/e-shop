@@ -52,21 +52,25 @@ fun NormalOpenAPIRoute.returnProduct(database: Database) {
             example = OptionalResult.FAIL,
             exClass = IllegalArgumentException::class
         ) {
-            get<V1ProductGetRequestParams, V1ProductGetOkResponse>(
-                info(
-                    summary = "Return a product.",
-                    description = "The product is returned only if a product with the same ID exists. Returns `${OptionalResult::class.simpleName}` containing the product data."
-                ),
-                example = V1ProductGetOkResponse.EXAMPLE
-            ) { param ->
-                val product = newSuspendedTransaction(db = database) {
-                    ProductTable.select { ProductTable.id.eq(param.id) }.firstOrNull()?.toProductWithId()
-                }
-
-                requireNotNull(product)
-
-                respond(V1ProductGetOkResponse(V1ProductGetOkResponse.Data(product.name, product.type)))
-            }
+            get(database)
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.get(database: Database) {
+    get<V1ProductGetRequestParams, V1ProductGetOkResponse>(
+        info(
+            summary = "Return a product.",
+            description = "The product is returned only if a product with the same ID exists. Returns `${OptionalResult::class.simpleName}` containing the product data."
+        ),
+        example = V1ProductGetOkResponse.EXAMPLE
+    ) { param ->
+        val product = newSuspendedTransaction(db = database) {
+            ProductTable.select { ProductTable.id.eq(param.id) }.firstOrNull()?.toProductWithId()
+        }
+
+        requireNotNull(product)
+
+        respond(V1ProductGetOkResponse(V1ProductGetOkResponse.Data(product.name, product.type)))
     }
 }

@@ -48,23 +48,27 @@ fun NormalOpenAPIRoute.createUser(database: Database) {
                 example = SuccessResult.FAIL,
                 exClass = IllegalArgumentException::class
             ) {
-                post<Unit, V1UserPostOkResponse, V1UserPostRequestBody>(
-                    info(
-                        summary = "Create a user.",
-                        description = "Returns `${SuccessResult::class.simpleName}` saying whether the user has been created."
-                    ),
-                    exampleResponse = V1UserPostOkResponse,
-                    exampleRequest = V1UserPostRequestBody.EXAMPLE
-                ) { _, body ->
-                    newSuspendedTransaction(db = database) {
-                        require(UserTable.select { UserTable.username.eq(body.username) }.count() == 0L)
-
-                        UserTable.insert { it.fromUserWithoutId(body) }
-                    }
-
-                    respond(V1UserPostOkResponse)
-                }
+                post(database)
             }
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.post(database: Database) {
+    post<Unit, V1UserPostOkResponse, V1UserPostRequestBody>(
+        info(
+            summary = "Create a user.",
+            description = "Returns `${SuccessResult::class.simpleName}` saying whether the user has been created."
+        ),
+        exampleResponse = V1UserPostOkResponse,
+        exampleRequest = V1UserPostRequestBody.EXAMPLE
+    ) { _, body ->
+        newSuspendedTransaction(db = database) {
+            require(UserTable.select { UserTable.username.eq(body.username) }.count() == 0L)
+
+            UserTable.insert { it.fromUserWithoutId(body) }
+        }
+
+        respond(V1UserPostOkResponse)
     }
 }

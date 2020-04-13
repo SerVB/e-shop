@@ -39,22 +39,26 @@ fun NormalOpenAPIRoute.validateToken(database: Database) {
                 example = SuccessResult.FAIL,
                 exClass = IllegalArgumentException::class
             ) {
-                get<V1TokenGetRequestParam, V1TokensGetOkResponse>(
-                    info(
-                        summary = "Update tokens.",
-                        description = "Returns `${SuccessResult::class.simpleName}` saying whether the token is valid."
-                    ),
-                    example = V1TokensGetOkResponse
-                ) { param ->
-                    val foundMatches = newSuspendedTransaction(db = database) {
-                        SessionTable.select { SessionTable.accessToken.eq(param.`X-Access`) }.count()
-                    }
-
-                    require(foundMatches == 1L)
-
-                    respond(V1TokensGetOkResponse)
-                }
+                get(database)
             }
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.get(database: Database) {
+    get<V1TokenGetRequestParam, V1TokensGetOkResponse>(
+        info(
+            summary = "Update tokens.",
+            description = "Returns `${SuccessResult::class.simpleName}` saying whether the token is valid."
+        ),
+        example = V1TokensGetOkResponse
+    ) { param ->
+        val foundMatches = newSuspendedTransaction(db = database) {
+            SessionTable.select { SessionTable.accessToken.eq(param.`X-Access`) }.count()
+        }
+
+        require(foundMatches == 1L)
+
+        respond(V1TokensGetOkResponse)
     }
 }

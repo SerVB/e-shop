@@ -67,31 +67,35 @@ data class V1ProductsGetOkResponse(
 
 fun NormalOpenAPIRoute.returnProducts(database: Database) {
     route("products") {
-        get<V1ProductsGetRequestParams, V1ProductsGetOkResponse>(
-            info(
-                summary = "Return a list of products.",
-                description = "Returns `${OptionalResult::class.simpleName}` containing the list of products data."
-            ),
-            example = V1ProductsGetOkResponse.EXAMPLE
-        ) { param ->
-            val offset = param.offset ?: V1ProductsGetRequestParams.DEFAULT_OFFSET
-            val limit = param.limit ?: V1ProductsGetRequestParams.MAX_LIMIT
+        get(database)
+    }
+}
 
-            val offsetInRange = maxOf(0, offset)
-            val limitInRange = maxOf(0, minOf(limit, V1ProductsGetRequestParams.MAX_LIMIT))
+private fun NormalOpenAPIRoute.get(database: Database) {
+    get<V1ProductsGetRequestParams, V1ProductsGetOkResponse>(
+        info(
+            summary = "Return a list of products.",
+            description = "Returns `${OptionalResult::class.simpleName}` containing the list of products data."
+        ),
+        example = V1ProductsGetOkResponse.EXAMPLE
+    ) { param ->
+        val offset = param.offset ?: V1ProductsGetRequestParams.DEFAULT_OFFSET
+        val limit = param.limit ?: V1ProductsGetRequestParams.MAX_LIMIT
 
-            val (total, products) = newSuspendedTransaction(db = database) {
-                val total = ProductTable.selectAll().count().toInt()
+        val offsetInRange = maxOf(0, offset)
+        val limitInRange = maxOf(0, minOf(limit, V1ProductsGetRequestParams.MAX_LIMIT))
 
-                val products = ProductTable
-                    .selectAll()
-                    .limit(n = limitInRange, offset = offsetInRange.toLong())
-                    .map { it.toProductWithId() }
+        val (total, products) = newSuspendedTransaction(db = database) {
+            val total = ProductTable.selectAll().count().toInt()
 
-                total to products
-            }
+            val products = ProductTable
+                .selectAll()
+                .limit(n = limitInRange, offset = offsetInRange.toLong())
+                .map { it.toProductWithId() }
 
-            respond(V1ProductsGetOkResponse(V1ProductsGetOkResponse.Data(total, products)))
+            total to products
         }
+
+        respond(V1ProductsGetOkResponse(V1ProductsGetOkResponse.Data(total, products)))
     }
 }

@@ -51,20 +51,24 @@ fun NormalOpenAPIRoute.createProduct(database: Database) {
             example = OptionalResult.FAIL,
             exClass = JsonProcessingException::class
         ) {
-            post<Unit, V1ProductPostOkResponse, V1ProductPostRequestBody>(
-                info(
-                    summary = "Create a product.",
-                    description = "Returns `${OptionalResult::class.simpleName}` saying whether the product has been created."
-                ),
-                exampleResponse = V1ProductPostOkResponse.EXAMPLE,
-                exampleRequest = V1ProductPostRequestBody.EXAMPLE
-            ) { _, body ->
-                val id = newSuspendedTransaction(db = database) {
-                    ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value
-                }
-
-                respond(V1ProductPostOkResponse(V1ProductPostOkResponse.Data(id)))
-            }
+            post(database)
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.post(database: Database) {
+    post<Unit, V1ProductPostOkResponse, V1ProductPostRequestBody>(
+        info(
+            summary = "Create a product.",
+            description = "Returns `${OptionalResult::class.simpleName}` saying whether the product has been created."
+        ),
+        exampleResponse = V1ProductPostOkResponse.EXAMPLE,
+        exampleRequest = V1ProductPostRequestBody.EXAMPLE
+    ) { _, body ->
+        val id = newSuspendedTransaction(db = database) {
+            ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value
+        }
+
+        respond(V1ProductPostOkResponse(V1ProductPostOkResponse.Data(id)))
     }
 }

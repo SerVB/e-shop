@@ -62,57 +62,61 @@ fun NormalOpenAPIRoute.updateTokens(database: Database) {
                 example = OptionalResult.FAIL,
                 exClass = IllegalArgumentException::class
             ) {
-                put<Unit, V1TokensPutOkResponse, V1TokensPutRequestBody>(
-                    info(
-                        summary = "Update tokens.",
-                        description = "Returns `${OptionalResult::class.simpleName}` saying whether tokens have been updated."
-                    ),
-                    exampleResponse = V1TokensPutOkResponse.EXAMPLE,
-                    exampleRequest = V1TokensPutRequestBody.EXAMPLE
-                ) { _, body ->
-                    val access = TokenCreator.createToken()
-                    val refresh = TokenCreator.createToken()
-
-                    val now = LocalDateTime.now()
-
-                    val accessTokenExpireAt = now.plusNanos(ParamsProvider.ACCESS_TOKEN_EXPIRATION_NANOS)
-                    val refreshTokenExpireAt = now.plusNanos(ParamsProvider.REFRESH_TOKEN_EXPIRATION_NANOS)
-
-                    newSuspendedTransaction(db = database) {
-                        val row = requireNotNull(
-                            SessionTable
-                                .select { SessionTable.refreshToken.eq(body.refresh) }
-                                .singleOrNull()
-                        )
-
-                        val userId = row[SessionTable.userId]
-                        val previousRefreshExpiration = row[SessionTable.refreshTokenExpireAt]
-
-                        SessionTable.deleteWhere { SessionTable.refreshToken.eq(body.refresh) }
-
-                        require(now <= previousRefreshExpiration)
-
-                        SessionTable.insert {
-                            it.fromUserWithId(
-                                userId = userId,
-                                accessToken = access,
-                                accessTokenExpireAt = accessTokenExpireAt,
-                                refreshToken = refresh,
-                                refreshTokenExpireAt = refreshTokenExpireAt
-                            )
-                        }
-                    }
-
-                    respond(
-                        V1TokensPutOkResponse(
-                            V1TokensPutOkResponse.Data(
-                                access = access,
-                                refresh = refresh
-                            )
-                        )
-                    )
-                }
+                put(database)
             }
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.put(database: Database) {
+    put<Unit, V1TokensPutOkResponse, V1TokensPutRequestBody>(
+        info(
+            summary = "Update tokens.",
+            description = "Returns `${OptionalResult::class.simpleName}` saying whether tokens have been updated."
+        ),
+        exampleResponse = V1TokensPutOkResponse.EXAMPLE,
+        exampleRequest = V1TokensPutRequestBody.EXAMPLE
+    ) { _, body ->
+        val access = TokenCreator.createToken()
+        val refresh = TokenCreator.createToken()
+
+        val now = LocalDateTime.now()
+
+        val accessTokenExpireAt = now.plusNanos(ParamsProvider.ACCESS_TOKEN_EXPIRATION_NANOS)
+        val refreshTokenExpireAt = now.plusNanos(ParamsProvider.REFRESH_TOKEN_EXPIRATION_NANOS)
+
+        newSuspendedTransaction(db = database) {
+            val row = requireNotNull(
+                SessionTable
+                    .select { SessionTable.refreshToken.eq(body.refresh) }
+                    .singleOrNull()
+            )
+
+            val userId = row[SessionTable.userId]
+            val previousRefreshExpiration = row[SessionTable.refreshTokenExpireAt]
+
+            SessionTable.deleteWhere { SessionTable.refreshToken.eq(body.refresh) }
+
+            require(now <= previousRefreshExpiration)
+
+            SessionTable.insert {
+                it.fromUserWithId(
+                    userId = userId,
+                    accessToken = access,
+                    accessTokenExpireAt = accessTokenExpireAt,
+                    refreshToken = refresh,
+                    refreshTokenExpireAt = refreshTokenExpireAt
+                )
+            }
+        }
+
+        respond(
+            V1TokensPutOkResponse(
+                V1TokensPutOkResponse.Data(
+                    access = access,
+                    refresh = refresh
+                )
+            )
+        )
     }
 }

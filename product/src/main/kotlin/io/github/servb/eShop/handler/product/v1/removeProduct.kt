@@ -35,21 +35,25 @@ fun NormalOpenAPIRoute.removeProduct(database: Database) {
             example = SuccessResult.FAIL,
             exClass = IllegalArgumentException::class
         ) {
-            delete<V1ProductDeleteRequestParams, V1ProductDeleteOkResponse>(
-                info(
-                    summary = "Remove a product.",
-                    description = "The product is removed only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been removed."
-                ),
-                example = V1ProductDeleteOkResponse
-            ) { param ->
-                newSuspendedTransaction(db = database) {
-                    require(ProductTable.select { ProductTable.id.eq(param.id) }.count() != 0L)
-
-                    ProductTable.deleteWhere { ProductTable.id.eq(param.id) }
-                }
-
-                respond(V1ProductDeleteOkResponse)
-            }
+            delete(database)
         }
+    }
+}
+
+private fun NormalOpenAPIRoute.delete(database: Database) {
+    delete<V1ProductDeleteRequestParams, V1ProductDeleteOkResponse>(
+        info(
+            summary = "Remove a product.",
+            description = "The product is removed only if a product with the same ID exists. Returns `${SuccessResult::class.simpleName}` saying whether the product has been removed."
+        ),
+        example = V1ProductDeleteOkResponse
+    ) { param ->
+        newSuspendedTransaction(db = database) {
+            require(ProductTable.select { ProductTable.id.eq(param.id) }.count() != 0L)
+
+            ProductTable.deleteWhere { ProductTable.id.eq(param.id) }
+        }
+
+        respond(V1ProductDeleteOkResponse)
     }
 }
