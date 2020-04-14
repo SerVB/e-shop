@@ -13,8 +13,10 @@ import io.github.servb.eShop.auth.model.SessionTable
 import io.github.servb.eShop.util.SuccessResult
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import java.time.LocalDateTime
 
 data class V1TokenGetRequestParam(
     @HeaderParam("Access token to validate.")
@@ -53,8 +55,14 @@ private fun NormalOpenAPIRoute.get(database: Database) {
         ),
         example = V1TokensGetOkResponse
     ) { param ->
+        val now = LocalDateTime.now()
+
         val foundMatches = newSuspendedTransaction(db = database) {
-            SessionTable.select { SessionTable.accessToken.eq(param.`X-Access`) }.count()
+            SessionTable
+                .select {
+                    SessionTable.accessToken.eq(param.`X-Access`) and SessionTable.accessTokenExpireAt.greater(now)
+                }
+                .count()
         }
 
         require(foundMatches == 1L)
