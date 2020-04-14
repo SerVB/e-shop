@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
+import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.post
@@ -12,11 +13,19 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
 import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductWithoutId
+import io.github.servb.eShop.throwsAuthExceptions
 import io.github.servb.eShop.util.OptionalResult
+import io.github.servb.eShop.validateRequest
+import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+
+data class V1ProductPostRequestParams(
+    @HeaderParam("Auth token.")
+    val `X-Access-Token`: String
+)
 
 @Request("Create product request body.")
 data class V1ProductPostRequestBody(
@@ -44,27 +53,31 @@ data class V1ProductPostOkResponse(
     data class Data(val id: Int)
 }
 
-fun NormalOpenAPIRoute.createProduct(database: Database) {
+fun NormalOpenAPIRoute.createProduct(database: Database, httpClient: HttpClient, authBaseUrl: String) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
             example = OptionalResult.FAIL,
             exClass = JsonProcessingException::class
         ) {
-            post(database)
+            throwsAuthExceptions(OptionalResult.FAIL) {
+                post(database, httpClient, authBaseUrl)
+            }
         }
     }
 }
 
-private fun NormalOpenAPIRoute.post(database: Database) {
-    post<Unit, V1ProductPostOkResponse, V1ProductPostRequestBody>(
+private fun NormalOpenAPIRoute.post(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+    post<V1ProductPostRequestParams, V1ProductPostOkResponse, V1ProductPostRequestBody>(
         info(
             summary = "Create a product.",
             description = "Returns `${OptionalResult::class.simpleName}` saying whether the product has been created."
         ),
         exampleResponse = V1ProductPostOkResponse.EXAMPLE,
         exampleRequest = V1ProductPostRequestBody.EXAMPLE
-    ) { _, body ->
+    ) { params, body ->
+        validateRequest(params.`X-Access-Token`, httpClient, authBaseUrl)
+
         val id = newSuspendedTransaction(db = database) {
             ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value
         }

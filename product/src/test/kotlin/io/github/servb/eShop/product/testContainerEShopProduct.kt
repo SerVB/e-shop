@@ -19,7 +19,9 @@ private fun Application.testContainerEShopProduct() {
         dbUser = container.username,
         dbPassword = container.password,
         dbHost = container.containerIpAddress,
-        dbDb = container.databaseName
+        dbDb = container.databaseName,
+        authPort = 4242,  // make it unreachable
+        authHost = "localhost4242"  // make it unreachable
     )
 }
 

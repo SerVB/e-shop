@@ -23,10 +23,10 @@ If you want to check it out locally, you should provide database like this:
 docker run -it -e POSTGRES_PASSWORD=123 -e POSTGRES_USER=user -e POSTGRES_DB=mydb -p 5432:5432 postgres:9.6
 ```
 
-After this, you can run `./gradlew :product:run` and `./gradlew :auth:run`. Don't forget about setting env like in docker-compose: `DB_USER=user;DB_HOST=localhost;DB_PORT=5432;DB_DB=mydb;DB_PASSWORD=123`.
+After this, you can run `./gradlew :product:run` and `./gradlew :auth:run`. Don't forget about setting env like in docker-compose: `DB_USER=user;DB_HOST=localhost;DB_PORT=5432;DB_DB=mydb;DB_PASSWORD=123;AUTH_PORT=8081;AUTH_HOST=localhost`.
 
 ## How does it work
-![Container diagram](https://kroki.io/c4plantuml/svg/eNqdk99v2jAQx9_9V9x4KdPo2m2d1MdSgtYfFDIShPYUGWzAWuKL7Espqva_zw4OpWqkTc1DJF_uPt_v3TknMLiAraINxDnXNHsYMXZliRuqipx9UHqZV0K6pGyAmrjS0nwu_Sc26v-azNIsncRZNJmPm_P8Nr3JRsMfw3HU_cgYKcpdeVMLQvG14QWs0IA8tRssGYulsai7lZWmB7P63emDPwKuQlbHsZKdJVlk11hpwc2uKzP_xSU3KfDMwD0HtZCRlQZFtaSMl-qQfRqC0I9voV-WuVpyUqg7LuMeKVe6B_eExp9jg49KSBu8QCi1sKr00hfxXNEOHhWH6TBJPdL5bbXCK9q89uEj7zFR1_2_gWjRFYtmEntc3X7EiS-4lbUEWlobmfwc-VPihJ3coVml3dKKvb9WuHfkV-eN_RNbr9fItbJkauYxH7gW-wattNYFrFP8w9hU5uGatG52jua33d_mxrVXvDy_PIcSjWv7LpmMz27SNHa8N7Cj3RyRfDRQvrRQakybm1fTnkou3HUxWNStbY0iNwNCD_5-8e1rAA-fSrRSfLqLrge9pgctaevsBMdvvL4M_l0ivvZF4Upq4f_uv3VnXos=)
+![Container diagram](https://kroki.io/c4plantuml/svg/eNqdVE2P2jAQvftXTLmUqux2226lPS5LUPeDQkpCUU-RiQ1YJJ7InixFVf977ZAA243aanOwNOOZ9974jfIaBpewVbSGMOOaZl9GwAk2BjfqXCFj15a4oTLP2Cul06wU0jUkA9TElZbmvPBXbNT_PpnFSTwJk2AyHzfx_C6-TUbDz8Nx0H3DGCnKXHvTC0LxleE5LNGAPLNrLBgLpbGou6WVpgez6uz0wYeAy7qq47CinSWZJzdYasHNrisTf-OKmxL4ycB9B7a6IikMijKlhBfqUH1WJ6Ef3kG_KDKVclKoO67iASlTugcPhMbHocFHJaSttUDdamFZ6tQ38UzRDh4Vh-kwij2k09sqhZe0fqrDZ14iour7fwHBoisWzUvs4arxA058wa2sKNDSysjo68hHkSN2dIdhlXam5Xt9reBekbfOC_snbGWvkStlyVSYp_jAtdgPaKW1LmEd4y_GpjKr16TV2Tmajd1vdqPaM15dXF1AgcaNfR9Nxu9u4zh0eM_ATrw5QfLZGuV9C4qHScZSrdYLbF-45-jfnF2Ck3sFnqZuQCDcSG0PLH_S9CoRNaiWtHXq6gHaCJ_4PJVcuEU1mFePujXK8xJ6sk-XHz_UXMMfBVop3t4HN4Me_I3qOMfR8heR-N4jw7XUwv9XfgOqSI2T)
 
 ## Rules
 - [x] Public repo.
@@ -67,4 +67,4 @@ Extra points:
 - [x] Auth (change login+password to access+refresh tokens).
 - [x] A way to change a refresh token to new access+refresh tokens.
 - [x] Validation endpoint.
-- [ ] Products changing endpoints must be available only with auth tokens.
+- [x] Products changing endpoints must be available only with auth tokens.

@@ -17,10 +17,11 @@ class EditProductTest : BehaviorSpec({
             val call = eShopProduct.handleRequest(HttpMethod.Put, "/v1/product/20") {
                 this.setBody("""{"name": "abc", "type": 1234}""")
                 this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                this.addHeader("X-Access-Token", "no token")
             }
 
             then("the response status should be NotFound") {
-                call.response.status() shouldBe HttpStatusCode.NotFound
+                call.response.status() shouldBe HttpStatusCode.NotImplemented
             }
 
             then("the response body should have only proper 'ok' field") {

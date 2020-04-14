@@ -21,10 +21,13 @@ services:
       DB_USER: productuser
       DB_PASSWORD: product123
       DB_HOST: db-product
+      AUTH_PORT: 8081
+      AUTH_HOST: e-shop-auth
     ports:
       - "8080:8080"
     networks:
       - productnetwork
+      - authproductnetwork
 
   db-auth:
     image: postgres:9.6
@@ -49,7 +52,9 @@ services:
       - "8081:8081"
     networks:
       - authnetwork
+      - authproductnetwork
 
 networks:
   productnetwork:
   authnetwork:
+  authproductnetwork:

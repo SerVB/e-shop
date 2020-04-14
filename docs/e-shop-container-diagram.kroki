@@ -20,6 +20,7 @@ System_Boundary(e_shop, "e-shop") {
 Rel(user, e_shop_product_api, "Works with products", "8080 port, JSON/HTTP")
 Rel(user, e_shop_auth_api, "Works with auth", "8081 port, JSON/HTTP")
 
+Rel_Neighbor(e_shop_product_api, e_shop_auth_api, "Validates access tokens", "8081  port, JSON/HTTP, authproductnetwork")
 Rel(e_shop_product_api, db_product, "Reads from and writes to", "5432 port, Exposed+JDBC, productnetwork")
 Rel(e_shop_auth_api, db_auth, "Reads from and writes to", "5432 port, Exposed+JDBC, authnetwork")
 @enduml

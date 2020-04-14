@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
+import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
@@ -14,7 +15,10 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
 import io.github.servb.eShop.model.ProductTable
 import io.github.servb.eShop.model.ProductWithoutId
+import io.github.servb.eShop.throwsAuthExceptions
 import io.github.servb.eShop.util.SuccessResult
+import io.github.servb.eShop.validateRequest
+import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
@@ -23,6 +27,8 @@ import org.jetbrains.exposed.sql.update
 
 @Path("{id}")
 data class V1ProductPutRequestParams(
+    @HeaderParam("Auth token.")
+    val `X-Access-Token`: String,
     @PathParam("ID of the product to edit.")
     val id: Int
 )
@@ -45,7 +51,7 @@ object V1ProductPutOkResponse : SuccessResult {
     override val ok = true
 }
 
-fun NormalOpenAPIRoute.editProduct(database: Database) {
+fun NormalOpenAPIRoute.editProduct(database: Database, httpClient: HttpClient, authBaseUrl: String) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
@@ -57,13 +63,15 @@ fun NormalOpenAPIRoute.editProduct(database: Database) {
                 example = SuccessResult.FAIL,
                 exClass = IllegalArgumentException::class
             ) {
-                put(database)
+                throwsAuthExceptions(SuccessResult.FAIL) {
+                    put(database, httpClient, authBaseUrl)
+                }
             }
         }
     }
 }
 
-private fun NormalOpenAPIRoute.put(database: Database) {
+private fun NormalOpenAPIRoute.put(database: Database, httpClient: HttpClient, authBaseUrl: String) {
     put<V1ProductPutRequestParams, V1ProductPutOkResponse, V1ProductPutRequestBody>(
         info(
             summary = "Edit a product.",
@@ -72,6 +80,8 @@ private fun NormalOpenAPIRoute.put(database: Database) {
         exampleResponse = V1ProductPutOkResponse,
         exampleRequest = V1ProductPutRequestBody.EXAMPLE
     ) { params, body ->
+        validateRequest(params.`X-Access-Token`, httpClient, authBaseUrl)
+
         newSuspendedTransaction(db = database) {
             require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
 

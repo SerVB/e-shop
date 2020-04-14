@@ -30,6 +30,7 @@ class EditProductTest : BehaviorSpec({
                 val call = eShopProduct.handleRequest(HttpMethod.Put, "/v1/product/$id") {
                     this.setBody(body)
                     this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    this.addHeader("X-Access-Token", "no token")
                 }
 
                 then("the response status should be BadRequest") {

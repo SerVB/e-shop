@@ -7,6 +7,7 @@ import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.github.servb.eShop.util.kotest.thenWithContract
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.GivenContext
 import io.kotest.core.spec.style.WhenAndContext
@@ -19,6 +20,7 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 
+@Ignored  // todo: move to a special integration test module
 class EShopProductV1MultipleOperationsTest : BehaviorSpec({
     givenTestContainerEShopProduct { eShopProduct ->
         makeThreePosts(eShopProduct)

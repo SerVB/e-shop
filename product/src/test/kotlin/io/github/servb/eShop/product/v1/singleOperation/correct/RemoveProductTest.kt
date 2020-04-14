@@ -11,10 +11,12 @@ import io.ktor.server.testing.handleRequest
 class RemoveProductTest : BehaviorSpec({
     givenTestContainerEShopProduct { eShopProduct ->
         `when`("I call DELETE nonexistent /v1/product") {
-            val call = eShopProduct.handleRequest(HttpMethod.Delete, "/v1/product/5")
+            val call = eShopProduct.handleRequest(HttpMethod.Delete, "/v1/product/5") {
+                this.addHeader("X-Access-Token", "no token")
+            }
 
             then("the response status should be NotFound") {
-                call.response.status() shouldBe HttpStatusCode.NotFound
+                call.response.status() shouldBe HttpStatusCode.NotImplemented
             }
 
             then("the response body should have only proper 'ok' field") {
