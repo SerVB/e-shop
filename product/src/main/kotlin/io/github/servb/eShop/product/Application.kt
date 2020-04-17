@@ -12,8 +12,8 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
 import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
+import io.github.servb.eShop.product.middleware.auth.GRpcRequestValidator
 import io.github.servb.eShop.product.middleware.auth.RequestValidator
-import io.github.servb.eShop.product.middleware.auth.RestRequestValidator
 import io.github.servb.eShop.product.route.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
@@ -49,10 +49,8 @@ fun Application.module() {
     val authPort = System.getenv(AUTH_PORT_ENV_NAME)!!.toInt()
     val authHost = System.getenv(AUTH_HOST_ENV_NAME)!!
 
-    val authBaseUrl = "http://$authHost:$authPort"
-
     module(
-        requestValidator = RestRequestValidator(authBaseUrl),
+        requestValidator = GRpcRequestValidator(authHost, authPort),
         dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
         dbUser = System.getenv(DB_USER_ENV_NAME)!!,
         dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,

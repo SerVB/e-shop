@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package io.github.servb.eShop.auth.grpc.protocol;
+
+option java_multiple_files = true;
+
+service AccessTokenValidation {
+  rpc ValidateAccessToken (AccessTokenValidationRequest) returns (AccessTokenValidationReply);
+}
+
+message AccessTokenValidationRequest {
+  string accessToken = 1;
+}
+
+message AccessTokenValidationReply {
+  enum UserType {
+    NotUser = 0;
+    User = 1;
+  }
+
+  UserType userType = 1;
+}

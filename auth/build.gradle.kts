@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClassName = "io.github.servb.eShop.auth.ApplicationKt"
 }
 
 repositories {
@@ -18,6 +18,7 @@ repositories {
 }
 
 val exposedVersion: String by project
+val grpcVersion: String by project
 val gsonVersion: String by project
 val kotestVersion: String by project
 val kotlinVersion: String by project
@@ -30,6 +31,7 @@ val testcontainersVersion: String by project
 
 dependencies {
     implementation(project(":server-util"))
+    implementation(project(":auth-grpc-protocol"))
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -68,5 +70,9 @@ val fatJar = task("fatJar", type = Jar::class) {
 tasks {
     "build" {
         dependsOn(fatJar)
+    }
+
+    "compileKotlin" {
+        dependsOn(project(":auth-grpc-protocol").tasks["generateProto"])
     }
 }

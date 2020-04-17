@@ -25,6 +25,9 @@ import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import org.jetbrains.exposed.sql.Database
 import kotlin.math.roundToInt
 import kotlin.reflect.KType
 
@@ -34,39 +37,49 @@ private val exampleServiceStatusUsable = ServiceStatusUsable(name = "my-service"
 
 private const val SERVICE_TITLE = "e-shop-auth"
 
-const val FORCE_IN_MEMORY_STORAGE_ENV_NAME = "io.github.servb.eShop.forceInMemory"
-
 const val DB_PORT_ENV_NAME = "DB_PORT"
 const val DB_USER_ENV_NAME = "DB_USER"
 const val DB_PASSWORD_ENV_NAME = "DB_PASSWORD"
 const val DB_HOST_ENV_NAME = "DB_HOST"
 const val DB_DB_ENV_NAME = "DB_DB"
 
-@Suppress("unused") // Referenced in application.conf
-fun Application.module() = module(
-    dbPort = java.lang.System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
-    dbUser = java.lang.System.getenv(DB_USER_ENV_NAME)!!,
-    dbPassword = java.lang.System.getenv(DB_PASSWORD_ENV_NAME)!!,
-    dbHost = java.lang.System.getenv(DB_HOST_ENV_NAME)!!,
-    dbDb = java.lang.System.getenv(DB_DB_ENV_NAME)!!
-)
-
-fun Application.module(
+fun createDatabase(
     dbPort: Int,
     dbUser: String,
     dbPassword: String,
     dbHost: String,
     dbDb: String
-) {
-    val serviceStartMillis = System.currentTimeMillis()
+) = DatabaseConnection(
+    dbPort = dbPort,
+    dbUser = dbUser,
+    dbPassword = dbPassword,
+    dbHost = dbHost,
+    dbDb = dbDb
+).database
 
-    val connection = DatabaseConnection(
-        dbPort = dbPort,
-        dbUser = dbUser,
-        dbPassword = dbPassword,
-        dbHost = dbHost,
-        dbDb = dbDb
+fun main() {
+    val database = createDatabase(
+        dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
+        dbUser = System.getenv(DB_USER_ENV_NAME)!!,
+        dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
+        dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
+        dbDb = System.getenv(DB_DB_ENV_NAME)!!
     )
+
+    embeddedServer(
+        factory = Netty,
+        port = System.getenv("PORT")?.toIntOrNull() ?: 8081,
+        module = { module(database) }
+    ).start()
+
+    AccessTokenValidationServer(
+        database = database,
+        port = System.getenv("VALIDATION_PORT")!!.toInt()
+    ).start()
+}
+
+fun Application.module(database: Database) {
+    val serviceStartMillis = System.currentTimeMillis()
 
     install(ContentNegotiation) {
         jackson()
@@ -124,7 +137,7 @@ fun Application.module(
 
         tag(Tag.V1) {
             route("v1") {
-                addAuthV1Routes(connection.database)
+                addAuthV1Routes(database)
             }
         }
     }

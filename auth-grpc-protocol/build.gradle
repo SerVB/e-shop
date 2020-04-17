@@ -1,0 +1,56 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm")
+    id("com.google.protobuf")
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { setUrl("https://kotlin.bintray.com/ktor") }
+    maven { setUrl("https://kotlin.bintray.com/kotlin-js-wrappers") }
+    maven { setUrl("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    api("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+    implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
+    api("io.grpc:grpc-protobuf:$grpcVersion")
+    api("io.grpc:grpc-stub:$grpcVersion")
+}
+
+// todo: how to rewrite this to kts?
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:$protobufVersion" }
+
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+        }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion"
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc { }
+                grpckt { }
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "build/generated/source/proto/main/grpc"
+            srcDirs "build/generated/source/proto/main/java"
+        }
+        kotlin {
+            srcDirs "build/generated/source/proto/main/grpckt"
+        }
+    }
+}

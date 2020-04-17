@@ -2,6 +2,7 @@ package io.github.servb.eShop.auth.v1.singleOperation.correct
 
 import io.github.servb.eShop.auth.givenTestContainerEShopAuth
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.http.ContentType
@@ -10,6 +11,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 
+@Ignored  // todo: rewrite the test to check gRPC
 class ValidateTokenTest : BehaviorSpec({
     givenTestContainerEShopAuth { eShopAuth ->
         `when`("I call GET /v1/token") {

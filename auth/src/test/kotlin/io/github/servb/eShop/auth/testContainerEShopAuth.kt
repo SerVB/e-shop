@@ -14,11 +14,13 @@ private fun Application.testContainerEShopAuth() {
     }
 
     module(
-        dbPort = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT),
-        dbUser = container.username,
-        dbPassword = container.password,
-        dbHost = container.containerIpAddress,
-        dbDb = container.databaseName
+        createDatabase(
+            dbPort = container.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT),
+            dbUser = container.username,
+            dbPassword = container.password,
+            dbHost = container.containerIpAddress,
+            dbDb = container.databaseName
+        )
     )
 }
 
