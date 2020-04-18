@@ -5,5 +5,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose build
+      - run: docker-compose build
