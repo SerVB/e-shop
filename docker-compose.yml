@@ -14,7 +14,7 @@ services:
   e-shop-product:
     build:
       context: .
-      dockerfile: Dockerfile-product
+      dockerfile: product/Dockerfile
     environment:
       DB_PORT: 5432
       DB_DB: productmydb
@@ -41,7 +41,7 @@ services:
   e-shop-auth:
     build:
       context: .
-      dockerfile: Dockerfile-auth
+      dockerfile: auth/Dockerfile
     environment:
       DB_PORT: 5432
       DB_DB: authmydb

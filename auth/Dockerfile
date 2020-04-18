@@ -1,3 +1,4 @@
+# Docker context is meant to be the root project dir
 FROM openjdk:8 as builder
 
 WORKDIR /root/build
