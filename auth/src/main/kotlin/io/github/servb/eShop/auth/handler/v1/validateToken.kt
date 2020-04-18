@@ -50,7 +50,7 @@ fun NormalOpenAPIRoute.validateToken(database: Database) {
 private fun NormalOpenAPIRoute.get(database: Database) {
     get<V1TokenGetRequestParam, V1TokensGetOkResponse>(
         info(
-            summary = "Update tokens.",
+            summary = "Validate token.",
             description = "Returns `${SuccessResult::class.simpleName}` saying whether the token is valid."
         ),
         example = V1TokensGetOkResponse
