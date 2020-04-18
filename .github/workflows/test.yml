@@ -9,4 +9,4 @@ jobs:
         with:
           java-version: '8'
       - run: touch ~/.testcontainers.properties
-      - run: ./gradlew check
+      - run: ./gradlew clean check build
