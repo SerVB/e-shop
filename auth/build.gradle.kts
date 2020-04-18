@@ -6,12 +6,6 @@ plugins {
     kotlin("jvm")
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 group = "io.github.servb"
 version = "1.0-SNAPSHOT"
 
