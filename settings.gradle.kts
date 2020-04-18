@@ -8,7 +8,8 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm") version kotlinVersion
+        kotlin("jvm") version kotlinVersion apply false
+        kotlin("multiplatform") version kotlinVersion apply false
     }
 }
 

@@ -1,23 +1,12 @@
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
     kotlin("jvm")
 }
 
-group = "io.github.servb"
-version = "1.0-SNAPSHOT"
-
 application {
     mainClassName = "io.ktor.server.netty.EngineMain"
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-    }
 }
 
 repositories {
@@ -26,10 +15,6 @@ repositories {
     maven { setUrl("https://kotlin.bintray.com/ktor") }
     maven { setUrl("https://kotlin.bintray.com/kotlin-js-wrappers") }
     maven { setUrl("https://jitpack.io") }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 val exposedVersion: String by project
