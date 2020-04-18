@@ -1,13 +1,16 @@
-[![Kotlin Badge](https://img.shields.io/badge/kotlin-1.3.71-green.svg)](https://kotlinlang.org/)
-[![Ktor Badge](https://img.shields.io/badge/ktor-1.3.2-green.svg)](https://ktor.io/)
-[![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/ktor--openapi--generator-646f366-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
-[![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
-[![Kotest Badge](https://img.shields.io/badge/kotest-4.0.2-green.svg)](https://github.com/kotest/kotest)
-![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
-[![testcontainrs Badge](https://img.shields.io/badge/testcontainers-1.13.0-blue.svg)](https://www.testcontainers.org/)
-[![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 [![Build status Badge](https://github.com/SerVB/e-shop/workflows/Build/badge.svg)](https://github.com/SerVB/e-shop/actions)
 [![Tests status Badge](https://github.com/SerVB/e-shop/workflows/Tests/badge.svg)](https://github.com/SerVB/e-shop/actions)
+
+[![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
+![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
+
+[![Kotlin Badge](https://img.shields.io/badge/Kotlin-1.3.71-green.svg)](https://kotlinlang.org/)
+
+[![Exposed Badge](https://img.shields.io/badge/Exposed-0.22.1-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+[![Kotest Badge](https://img.shields.io/badge/Kotest-4.0.2-green.svg)](https://github.com/kotest/kotest)
+[![Ktor Badge](https://img.shields.io/badge/Ktor-1.3.2-green.svg)](https://ktor.io/)
+[![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/Ktor%20OpenAPI%20Generator-646f366-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
+[![Testcontainrs Badge](https://img.shields.io/badge/Testcontainers-1.13.0-blue.svg)](https://www.testcontainers.org/)
 # e-shop
 ## Running in Docker
 You can run the project easily using Docker:
