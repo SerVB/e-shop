@@ -23,6 +23,9 @@ services:
       DB_HOST: db-product
       AUTH_PORT: 8081
       AUTH_HOST: e-shop-auth
+    depends_on:
+      - db-product
+      - e-shop-auth
     ports:
       - "8080:8080"
     networks:
@@ -50,6 +53,8 @@ services:
       DB_HOST: db-auth
     ports:
       - "8081:8081"
+    depends_on:
+      - db-auth
     networks:
       - authnetwork
       - authproductnetwork
