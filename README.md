@@ -3,6 +3,7 @@
 
 [![Docker-compose Badge](https://img.shields.io/badge/docker-compose-blue.svg)](https://docs.docker.com/compose/)
 ![jdbc postgresql Badge](https://img.shields.io/badge/jdbc-postgresql-darkblue.svg)
+![Swagger UI Badge](https://img.shields.io/badge/swagger-ui-black.svg)
 
 [![Kotlin Badge](https://img.shields.io/badge/Kotlin-1.3.71-green.svg)](https://kotlinlang.org/)
 
