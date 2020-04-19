@@ -1,4 +1,4 @@
-package io.github.servb.eShop.handler.product.v1
+package io.github.servb.eShop.product.handler.v1
 
 import com.papsign.ktor.openapigen.annotations.Response
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
@@ -7,9 +7,9 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
-import io.github.servb.eShop.model.ProductTable
-import io.github.servb.eShop.model.ProductTable.toProductWithId
-import io.github.servb.eShop.model.ProductWithId
+import io.github.servb.eShop.product.model.ProductTable
+import io.github.servb.eShop.product.model.ProductTable.toProductWithId
+import io.github.servb.eShop.product.model.ProductWithId
 import io.github.servb.eShop.util.OptionalResult
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll

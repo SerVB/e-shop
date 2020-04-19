@@ -1,4 +1,4 @@
-package io.github.servb.eShop
+package io.github.servb.eShop.product
 
 import com.papsign.ktor.openapigen.APITag
 import com.papsign.ktor.openapigen.OpenAPIGen
@@ -12,7 +12,7 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
 import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
-import io.github.servb.eShop.route.product.v1.addProductV1Routes
+import io.github.servb.eShop.product.route.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
 import io.ktor.application.Application

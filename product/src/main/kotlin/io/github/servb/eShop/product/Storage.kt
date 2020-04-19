@@ -1,6 +1,6 @@
-package io.github.servb.eShop
+package io.github.servb.eShop.product
 
-import io.github.servb.eShop.model.ProductTable
+import io.github.servb.eShop.product.model.ProductTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction

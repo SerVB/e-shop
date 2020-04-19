@@ -1,4 +1,4 @@
-package io.github.servb.eShop.model
+package io.github.servb.eShop.product.model
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow

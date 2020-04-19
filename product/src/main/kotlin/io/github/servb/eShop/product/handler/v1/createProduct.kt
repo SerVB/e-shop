@@ -1,4 +1,4 @@
-package io.github.servb.eShop.handler.product.v1
+package io.github.servb.eShop.product.handler.v1
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -11,11 +11,11 @@ import com.papsign.ktor.openapigen.route.path.normal.post
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
-import io.github.servb.eShop.model.ProductTable
-import io.github.servb.eShop.model.ProductWithoutId
-import io.github.servb.eShop.throwsAuthExceptions
+import io.github.servb.eShop.product.model.ProductTable
+import io.github.servb.eShop.product.model.ProductWithoutId
+import io.github.servb.eShop.product.throwsAuthExceptions
+import io.github.servb.eShop.product.validateRequest
 import io.github.servb.eShop.util.OptionalResult
-import io.github.servb.eShop.validateRequest
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database

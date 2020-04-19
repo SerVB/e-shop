@@ -1,4 +1,4 @@
-package io.github.servb.eShop
+package io.github.servb.eShop.product
 
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.throws

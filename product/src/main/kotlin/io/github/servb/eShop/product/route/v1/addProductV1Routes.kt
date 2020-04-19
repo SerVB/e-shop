@@ -1,7 +1,7 @@
-package io.github.servb.eShop.route.product.v1
+package io.github.servb.eShop.product.route.v1
 
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
-import io.github.servb.eShop.handler.product.v1.*
+import io.github.servb.eShop.product.handler.v1.*
 import io.ktor.client.HttpClient
 import org.jetbrains.exposed.sql.Database
 
