@@ -36,7 +36,6 @@ After this, you can run `./gradlew :product:run` and `./gradlew :auth:run`. Don'
 
 ## Rules
 - [x] Public repo.
-- [x] Task per branch.
 - [x] Description.
 - [x] Architecture graph.
 - [x] Swagger UI.
