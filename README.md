@@ -13,6 +13,8 @@
 [![Ktor-OpenAPI-Generator Badge](https://img.shields.io/badge/Ktor%20OpenAPI%20Generator-646f366-green.svg)](https://github.com/papsign/Ktor-OpenAPI-Generator)
 [![Testcontainrs Badge](https://img.shields.io/badge/Testcontainers-1.13.0-blue.svg)](https://www.testcontainers.org/)
 # e-shop
+A project to learn modern web technologies – backend for an online shop.
+
 ## Running in Docker
 You can run the project easily using Docker:
 ```shell script
