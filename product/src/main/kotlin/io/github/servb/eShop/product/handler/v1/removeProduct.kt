@@ -10,11 +10,10 @@ import com.papsign.ktor.openapigen.route.path.normal.delete
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
+import io.github.servb.eShop.product.middleware.auth.RequestValidator
+import io.github.servb.eShop.product.middleware.auth.throwsAuthExceptions
 import io.github.servb.eShop.product.model.ProductTable
-import io.github.servb.eShop.product.throwsAuthExceptions
-import io.github.servb.eShop.product.validateRequest
 import io.github.servb.eShop.util.SuccessResult
-import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.deleteWhere
@@ -34,7 +33,7 @@ object V1ProductDeleteOkResponse : SuccessResult {
     override val ok = true
 }
 
-fun NormalOpenAPIRoute.removeProduct(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+fun NormalOpenAPIRoute.removeProduct(database: Database, requestValidator: RequestValidator) {
     route("product") {
         throws(
             status = HttpStatusCode.NotFound.description("The product does not exist."),
@@ -42,13 +41,13 @@ fun NormalOpenAPIRoute.removeProduct(database: Database, httpClient: HttpClient,
             exClass = IllegalArgumentException::class
         ) {
             throwsAuthExceptions(SuccessResult.FAIL) {
-                delete(database, httpClient, authBaseUrl)
+                delete(database, requestValidator)
             }
         }
     }
 }
 
-private fun NormalOpenAPIRoute.delete(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+private fun NormalOpenAPIRoute.delete(database: Database, requestValidator: RequestValidator) {
     delete<V1ProductDeleteRequestParams, V1ProductDeleteOkResponse>(
         info(
             summary = "Remove a product.",
@@ -56,7 +55,7 @@ private fun NormalOpenAPIRoute.delete(database: Database, httpClient: HttpClient
         ),
         example = V1ProductDeleteOkResponse
     ) { params ->
-        validateRequest(params.`X-Access-Token`, httpClient, authBaseUrl)
+        requestValidator.validate(params.`X-Access-Token`)
 
         newSuspendedTransaction(db = database) {
             require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)

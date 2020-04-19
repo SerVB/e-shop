@@ -13,7 +13,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 
 class EShopProductRootTest : BehaviorSpec({
-    givenTestContainerEShopProduct { eShopProduct ->
+    givenTestContainerEShopProduct(AlwaysNoConnectionRequestValidator) { eShopProduct ->
         `when`("I call GET /") {
             val call = eShopProduct.handleRequest(HttpMethod.Get, "/")
 

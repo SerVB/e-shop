@@ -2,6 +2,7 @@
 
 package io.github.servb.eShop.product.v1.multipleOperations
 
+import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
 import io.github.servb.eShop.product.givenTestContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
@@ -22,7 +23,7 @@ import io.ktor.server.testing.setBody
 
 @Ignored  // todo: move to a special integration test module
 class EShopProductV1MultipleOperationsTest : BehaviorSpec({
-    givenTestContainerEShopProduct { eShopProduct ->
+    givenTestContainerEShopProduct(AlwaysNoConnectionRequestValidator) { eShopProduct ->
         makeThreePosts(eShopProduct)
     }
 }) {

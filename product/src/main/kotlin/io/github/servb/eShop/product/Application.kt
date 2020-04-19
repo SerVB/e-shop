@@ -12,6 +12,8 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
 import com.papsign.ktor.openapigen.schema.namer.SchemaNamer
+import io.github.servb.eShop.product.middleware.auth.RequestValidator
+import io.github.servb.eShop.product.middleware.auth.RestRequestValidator
 import io.github.servb.eShop.product.route.v1.addProductV1Routes
 import io.github.servb.eShop.util.logRequests
 import io.github.servb.eShop.util.logResponses
@@ -19,17 +21,12 @@ import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.install
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.features.json.GsonSerializer
-import io.ktor.client.features.json.JsonFeature
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
 import kotlin.math.roundToInt
 import kotlin.reflect.KType
 
@@ -48,25 +45,29 @@ const val AUTH_PORT_ENV_NAME = "AUTH_PORT"
 const val AUTH_HOST_ENV_NAME = "AUTH_HOST"
 
 @Suppress("unused") // Referenced in application.conf
-fun Application.module() = module(
-    dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
-    dbUser = System.getenv(DB_USER_ENV_NAME)!!,
-    dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
-    dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
-    dbDb = System.getenv(DB_DB_ENV_NAME)!!,
-    authPort = System.getenv(AUTH_PORT_ENV_NAME)!!.toInt(),
-    authHost = System.getenv(AUTH_HOST_ENV_NAME)!!
-)
+fun Application.module() {
+    val authPort = System.getenv(AUTH_PORT_ENV_NAME)!!.toInt()
+    val authHost = System.getenv(AUTH_HOST_ENV_NAME)!!
 
-@OptIn(KtorExperimentalAPI::class)
+    val authBaseUrl = "http://$authHost:$authPort"
+
+    module(
+        requestValidator = RestRequestValidator(authBaseUrl),
+        dbPort = System.getenv(DB_PORT_ENV_NAME)!!.toInt(),
+        dbUser = System.getenv(DB_USER_ENV_NAME)!!,
+        dbPassword = System.getenv(DB_PASSWORD_ENV_NAME)!!,
+        dbHost = System.getenv(DB_HOST_ENV_NAME)!!,
+        dbDb = System.getenv(DB_DB_ENV_NAME)!!
+    )
+}
+
 fun Application.module(
     dbPort: Int,
     dbUser: String,
     dbPassword: String,
     dbHost: String,
     dbDb: String,
-    authPort: Int,
-    authHost: String
+    requestValidator: RequestValidator
 ) {
     val serviceStartMillis = System.currentTimeMillis()
 
@@ -107,13 +108,6 @@ fun Application.module(
     logRequests()
     logResponses()
 
-    val httpClient = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = GsonSerializer()
-        }
-    }
-    val authBaseUrl = "http://$authHost:$authPort"
-
     routing {
         get(OPEN_API_JSON_PATH) {
             call.respond(application.openAPIGen.api.serialize())
@@ -141,7 +135,7 @@ fun Application.module(
 
         tag(Tag.V1) {
             route("v1") {
-                addProductV1Routes(connection.database, httpClient, authBaseUrl)
+                addProductV1Routes(connection.database, requestValidator)
             }
         }
     }

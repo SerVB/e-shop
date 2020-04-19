@@ -11,12 +11,11 @@ import com.papsign.ktor.openapigen.route.path.normal.post
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
+import io.github.servb.eShop.product.middleware.auth.RequestValidator
+import io.github.servb.eShop.product.middleware.auth.throwsAuthExceptions
 import io.github.servb.eShop.product.model.ProductTable
 import io.github.servb.eShop.product.model.ProductWithoutId
-import io.github.servb.eShop.product.throwsAuthExceptions
-import io.github.servb.eShop.product.validateRequest
 import io.github.servb.eShop.util.OptionalResult
-import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -53,7 +52,7 @@ data class V1ProductPostOkResponse(
     data class Data(val id: Int)
 }
 
-fun NormalOpenAPIRoute.createProduct(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+fun NormalOpenAPIRoute.createProduct(database: Database, requestValidator: RequestValidator) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
@@ -61,13 +60,13 @@ fun NormalOpenAPIRoute.createProduct(database: Database, httpClient: HttpClient,
             exClass = JsonProcessingException::class
         ) {
             throwsAuthExceptions(OptionalResult.FAIL) {
-                post(database, httpClient, authBaseUrl)
+                post(database, requestValidator)
             }
         }
     }
 }
 
-private fun NormalOpenAPIRoute.post(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+private fun NormalOpenAPIRoute.post(database: Database, requestValidator: RequestValidator) {
     post<V1ProductPostRequestParams, V1ProductPostOkResponse, V1ProductPostRequestBody>(
         info(
             summary = "Create a product.",
@@ -76,7 +75,7 @@ private fun NormalOpenAPIRoute.post(database: Database, httpClient: HttpClient, 
         exampleResponse = V1ProductPostOkResponse.EXAMPLE,
         exampleRequest = V1ProductPostRequestBody.EXAMPLE
     ) { params, body ->
-        validateRequest(params.`X-Access-Token`, httpClient, authBaseUrl)
+        requestValidator.validate(params.`X-Access-Token`)
 
         val id = newSuspendedTransaction(db = database) {
             ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value

@@ -1,5 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.correct
 
+import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
 import io.github.servb.eShop.product.givenTestContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.kotest.core.spec.style.BehaviorSpec
@@ -9,7 +10,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 
 class ReturnProductsTest : BehaviorSpec({
-    givenTestContainerEShopProduct { eShopProduct ->
+    givenTestContainerEShopProduct(AlwaysNoConnectionRequestValidator) { eShopProduct ->
         `when`("I call GET /v1/products") {
             val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/products")
 

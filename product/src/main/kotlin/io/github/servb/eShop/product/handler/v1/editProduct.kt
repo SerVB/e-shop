@@ -13,12 +13,11 @@ import com.papsign.ktor.openapigen.route.path.normal.put
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
+import io.github.servb.eShop.product.middleware.auth.RequestValidator
+import io.github.servb.eShop.product.middleware.auth.throwsAuthExceptions
 import io.github.servb.eShop.product.model.ProductTable
 import io.github.servb.eShop.product.model.ProductWithoutId
-import io.github.servb.eShop.product.throwsAuthExceptions
-import io.github.servb.eShop.product.validateRequest
 import io.github.servb.eShop.util.SuccessResult
-import io.ktor.client.HttpClient
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
@@ -51,7 +50,7 @@ object V1ProductPutOkResponse : SuccessResult {
     override val ok = true
 }
 
-fun NormalOpenAPIRoute.editProduct(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+fun NormalOpenAPIRoute.editProduct(database: Database, requestValidator: RequestValidator) {
     route("product") {
         throws(
             status = HttpStatusCode.BadRequest.description("A request body decoding error."),
@@ -64,14 +63,14 @@ fun NormalOpenAPIRoute.editProduct(database: Database, httpClient: HttpClient, a
                 exClass = IllegalArgumentException::class
             ) {
                 throwsAuthExceptions(SuccessResult.FAIL) {
-                    put(database, httpClient, authBaseUrl)
+                    put(database, requestValidator)
                 }
             }
         }
     }
 }
 
-private fun NormalOpenAPIRoute.put(database: Database, httpClient: HttpClient, authBaseUrl: String) {
+private fun NormalOpenAPIRoute.put(database: Database, requestValidator: RequestValidator) {
     put<V1ProductPutRequestParams, V1ProductPutOkResponse, V1ProductPutRequestBody>(
         info(
             summary = "Edit a product.",
@@ -80,7 +79,7 @@ private fun NormalOpenAPIRoute.put(database: Database, httpClient: HttpClient, a
         exampleResponse = V1ProductPutOkResponse,
         exampleRequest = V1ProductPutRequestBody.EXAMPLE
     ) { params, body ->
-        validateRequest(params.`X-Access-Token`, httpClient, authBaseUrl)
+        requestValidator.validate(params.`X-Access-Token`)
 
         newSuspendedTransaction(db = database) {
             require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)
