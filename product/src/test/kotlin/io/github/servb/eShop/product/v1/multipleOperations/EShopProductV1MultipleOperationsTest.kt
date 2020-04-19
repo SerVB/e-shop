@@ -2,13 +2,12 @@
 
 package io.github.servb.eShop.product.v1.multipleOperations
 
-import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
+import io.github.servb.eShop.product.AlwaysSuccessRequestValidator
 import io.github.servb.eShop.product.givenTestContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKeyAndValueOfSpecificType
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.github.servb.eShop.util.kotest.thenWithContract
-import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.GivenContext
 import io.kotest.core.spec.style.WhenAndContext
@@ -21,9 +20,8 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 
-@Ignored  // todo: move to a special integration test module
 class EShopProductV1MultipleOperationsTest : BehaviorSpec({
-    givenTestContainerEShopProduct(AlwaysNoConnectionRequestValidator) { eShopProduct ->
+    givenTestContainerEShopProduct(AlwaysSuccessRequestValidator) { eShopProduct ->
         makeThreePosts(eShopProduct)
     }
 }) {
@@ -35,6 +33,7 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                 val call = eShopProduct.handleRequest(HttpMethod.Post, "/v1/product") {
                     this.setBody("""{"name": "socks", "type": 1}""")
                     this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    this.addHeader("X-Access-Token", "no token")
                 }
 
                 then("the response status should be OK") {
@@ -53,6 +52,7 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                     val call = eShopProduct.handleRequest(HttpMethod.Post, "/v1/product") {
                         this.setBody("""{"name": "socks", "type": 1}""")
                         this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        this.addHeader("X-Access-Token", "no token")
                     }
 
                     then("the response status should be OK") {
@@ -71,6 +71,7 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                         val call = eShopProduct.handleRequest(HttpMethod.Post, "/v1/product") {
                             this.setBody("""{"name": "car", "type": 55}""")
                             this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                            this.addHeader("X-Access-Token", "no token")
                         }
 
                         then("the response status should be OK") {
@@ -101,6 +102,7 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                 val call = eShopProduct.handleRequest(HttpMethod.Put, "/v1/product/$secondId") {
                     this.setBody("""{"name": "second", "type": 2}""")
                     this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                    this.addHeader("X-Access-Token", "no token")
                 }
 
                 then("the response status should be OK") {

@@ -1,6 +1,8 @@
 package io.github.servb.eShop.product.v1.singleOperation.incorrect
 
+import io.github.servb.eShop.product.AlwaysFailRequestValidator
 import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
+import io.github.servb.eShop.product.AlwaysSuccessRequestValidator
 import io.github.servb.eShop.product.givenTestContainerEShopProduct
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.kotest.core.spec.style.BehaviorSpec
@@ -15,28 +17,34 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 
 class CreateProductTest : BehaviorSpec({
-    givenTestContainerEShopProduct(AlwaysNoConnectionRequestValidator) { eShopProduct ->
-        forAll(
-            row(""),
-            row("{"),
-            row("}"),
-            row("""{}"""),
-            row("""{"name": "socks"}"""),
-            row("""{"type": 1}""")
-        ) { body ->
-            `when`("I call incorrect POST /v1/product '$body'") {
-                val call = eShopProduct.handleRequest(HttpMethod.Post, "/v1/product") {
-                    this.setBody(body)
-                    this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                    this.addHeader("X-Access-Token", "no token")
-                }
+    io.kotest.data.blocking.forAll(
+        row(AlwaysNoConnectionRequestValidator),
+        row(AlwaysFailRequestValidator),
+        row(AlwaysSuccessRequestValidator)
+    ) { requestValidator ->
+        givenTestContainerEShopProduct(requestValidator) { eShopProduct ->
+            forAll(
+                row(""),
+                row("{"),
+                row("}"),
+                row("""{}"""),
+                row("""{"name": "socks"}"""),
+                row("""{"type": 1}""")
+            ) { body ->
+                `when`("I call incorrect POST /v1/product '$body'") {
+                    val call = eShopProduct.handleRequest(HttpMethod.Post, "/v1/product") {
+                        this.setBody(body)
+                        this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                        this.addHeader("X-Access-Token", "no token")
+                    }
 
-                then("the response status should be BadRequest") {
-                    call.response.status() shouldBe HttpStatusCode.BadRequest
-                }
+                    then("the response status should be BadRequest") {
+                        call.response.status() shouldBe HttpStatusCode.BadRequest
+                    }
 
-                then("the response body should have only proper 'data' field") {
-                    call.response.content shouldMatchJson """{"data": null}"""
+                    then("the response body should have only proper 'data' field") {
+                        call.response.content shouldMatchJson """{"data": null}"""
+                    }
                 }
             }
         }

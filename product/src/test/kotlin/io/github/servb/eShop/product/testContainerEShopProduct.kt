@@ -47,7 +47,7 @@ fun BehaviorSpec.givenTestContainerEShopProduct(
     requestValidator: RequestValidator,
     test: suspend GivenContext.(TestApplicationEngine) -> Unit
 ) {
-    given("test container e-shop-product with $requestValidator") {
+    given("test container e-shop-product with ${requestValidator::class.simpleName}") {
         withTestApplication(
             moduleFunction = { testContainerEShopProduct(requestValidator) },
             test = { this@given.test(this) }
