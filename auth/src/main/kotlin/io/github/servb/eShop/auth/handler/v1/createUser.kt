@@ -18,7 +18,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-@Request("Create tokens request body.")
+@Request("Create user request body.")
 data class V1UserPostRequestBody(
     override val username: String,
     override val password: String
