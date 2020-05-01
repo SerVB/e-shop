@@ -79,6 +79,6 @@ Extra points:
 - [x] Replace token validation to gRPC variant.
 - [x] Make protobuf files shared (extract to a module).
 - [x] Hash passwords in storage.
-- [ ] Add roles: admin and user.
-    - Admin can create, edit, and remove products. Also, they can create a new administrator. First created user is an administrator.
+- [x] Add roles: admin and user.
+    - Admin can create, edit, remove, and view products. Also, they can create a new administrator (however, first admin can be created without admin rights).
     - User can view products.

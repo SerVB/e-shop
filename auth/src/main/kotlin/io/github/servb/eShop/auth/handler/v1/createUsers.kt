@@ -3,54 +3,70 @@ package io.github.servb.eShop.auth.handler.v1
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.papsign.ktor.openapigen.annotations.Request
 import com.papsign.ktor.openapigen.annotations.Response
+import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.post
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
+import io.github.servb.eShop.auth.grpc.protocol.AccessTokenValidationReply
+import io.github.servb.eShop.auth.model.Role
 import io.github.servb.eShop.auth.model.UserTable
 import io.github.servb.eShop.auth.model.UserWithoutId
+import io.github.servb.eShop.auth.retrieveUserType
 import io.github.servb.eShop.util.Do
 import io.github.servb.eShop.util.OptionalResult
-import io.github.servb.eShop.util.SuccessResult
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
+data class V1UsersPostRequestParams(
+    @HeaderParam("Auth token.")
+    val `X-Access-Token`: String?
+)
+
 @Request("Create uses request body.")
 data class V1UsersPostRequestBody(val users: List<User>) {
 
     companion object {
 
-        val EXAMPLE = V1UsersPostRequestBody(listOf(User("myName", "pass")))
+        val EXAMPLE = V1UsersPostRequestBody(
+            listOf(
+                User("myName", "pass", Role.USER),
+                User("myName1", "pass", Role.USER),
+                User("myName2", "pass", Role.ADMIN)
+            )
+        )
     }
 
     data class User(
         override val username: String,
-        override val password: String
+        override val password: String,
+        override val role: Role
     ) : UserWithoutId
 }
 
-@Response("The users has been created.", statusCode = 200)
-object V1UsersPostOkResponse : OptionalResult<SuccessResult> {
+@Response("Result response.", statusCode = 200)
+class V1UsersPostOkResponse(override val data: ResultLists) : OptionalResult<ResultLists>
 
-    override val data = SuccessResult.SUCCESS
-}
-
-data class V1UsersPostConflictResponse(override val data: List<String>) : OptionalResult<List<String>> {
+data class ResultLists(
+    val created: List<String>,
+    val conflicts: List<String>,
+    val noRights: List<String>
+) {
 
     companion object {
 
-        fun fromException(e: ConflictFoundException) = V1UsersPostConflictResponse(e.conflictAccounts)
-
-        val EXAMPLE = V1UsersPostConflictResponse(listOf("myName"))
+        val EXAMPLE = ResultLists(
+            listOf("myName"),
+            listOf("myName1"),
+            listOf("myName2")
+        )
     }
 }
-
-class ConflictFoundException(val conflictAccounts: List<String>) : Throwable()
 
 fun NormalOpenAPIRoute.createUsers(database: Database) {
     route("users") {
@@ -59,41 +75,55 @@ fun NormalOpenAPIRoute.createUsers(database: Database) {
             example = OptionalResult.FAIL,
             exClass = JsonProcessingException::class
         ) {
-            throws(
-                status = HttpStatusCode.Conflict.description("The listed usernames already exist."),
-                example = V1UsersPostConflictResponse.EXAMPLE,
-                gen = V1UsersPostConflictResponse.Companion::fromException
-            ) {
-                post(database)
-            }
+            post(database)
         }
     }
 }
 
 private fun NormalOpenAPIRoute.post(database: Database) {
-    post<Unit, V1UsersPostOkResponse, V1UsersPostRequestBody>(
+    post<V1UsersPostRequestParams, V1UsersPostOkResponse, V1UsersPostRequestBody>(
         info(
             summary = "Create users.",
             description = "Returns `${OptionalResult::class.simpleName}` saying whether the users has been created."
         ),
-        exampleResponse = V1UsersPostOkResponse,
+        exampleResponse = V1UsersPostOkResponse(ResultLists.EXAMPLE),
         exampleRequest = V1UsersPostRequestBody.EXAMPLE
-    ) { _, body ->
+    ) { params, body ->
+        val creatorUserType = retrieveUserType(database, params.`X-Access-Token`)
+        val hasAdmins = newSuspendedTransaction(db = database) {
+            UserTable.select { UserTable.role.eq(Role.ADMIN) }.firstOrNull() != null
+        }
+
+        val created = mutableListOf<String>()
         val conflicts = mutableListOf<String>()
+        val noRights = mutableListOf<String>()
 
-        body.users.forEach { user ->
+        body.users.forEach { userToCreate ->
             newSuspendedTransaction(db = database) {
-                Do exhaustive when (UserTable.select { UserTable.username.eq(user.username) }.count()) {
-                    0L -> UserTable.insert { it.fromUserWithoutId(user) }
+                Do exhaustive when (UserTable.select { UserTable.username.eq(userToCreate.username) }.count()) {
+                    0L -> {
+                        if (userToCreate.role == Role.ADMIN && hasAdmins && creatorUserType != AccessTokenValidationReply.UserType.Admin) {
+                            noRights.add(userToCreate.username)
+                            return@newSuspendedTransaction
+                        }
 
-                    else -> conflicts.add(user.username)
+                        UserTable.insert { it.fromUserWithoutId(userToCreate) }
+                        created.add(userToCreate.username)
+                    }
+
+                    else -> conflicts.add(userToCreate.username)
                 }
             }
         }
 
-        Do exhaustive when (conflicts.isEmpty()) {
-            true -> respond(V1UsersPostOkResponse)
-            false -> throw ConflictFoundException(conflicts)
-        }
+        respond(
+            V1UsersPostOkResponse(
+                ResultLists(
+                    created = created,
+                    conflicts = conflicts,
+                    noRights = noRights
+                )
+            )
+        )
     }
 }

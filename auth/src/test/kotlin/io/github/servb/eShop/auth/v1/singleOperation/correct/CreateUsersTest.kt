@@ -2,6 +2,7 @@ package io.github.servb.eShop.auth.v1.singleOperation.correct
 
 import io.github.servb.eShop.auth.givenTestContainerEShopAuth
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
+import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.http.ContentType
@@ -15,7 +16,7 @@ class CreateUsersTest : BehaviorSpec({
     givenTestContainerEShopAuth { eShopAuth ->
         `when`("I call POST /v1/users") {
             val call = eShopAuth.handleRequest(HttpMethod.Post, "/v1/users") {
-                this.setBody("""{"users": [{"username": "abc", "password": "1234"}, {"username": "abc1", "password": "1234"}]}""")
+                this.setBody("""{"users": [{"username": "abc", "password": "1234", "role": "USER"}, {"username": "abc1", "password": "1234", "role": "ADMIN"}]}""")
                 this.addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             }
 
@@ -25,7 +26,7 @@ class CreateUsersTest : BehaviorSpec({
 
             then("the response body should have only proper 'data' field") {
                 call.response.content.shouldContainOnlyJsonKey("data")
-                    .shouldContainOnlyJsonKey("ok") shouldBe "true"
+                    .shouldMatchJson("""{"created":["abc", "abc1"],"conflicts":[],"noRights":[]}""")
             }
         }
     }

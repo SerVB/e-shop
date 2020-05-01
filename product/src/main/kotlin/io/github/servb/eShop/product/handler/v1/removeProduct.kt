@@ -55,7 +55,7 @@ private fun NormalOpenAPIRoute.delete(database: Database, requestValidator: Requ
         ),
         example = V1ProductDeleteOkResponse
     ) { params ->
-        requestValidator.validate(params.`X-Access-Token`)
+        requestValidator.validate(params.`X-Access-Token`, needAdmin = true)
 
         newSuspendedTransaction(db = database) {
             require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)

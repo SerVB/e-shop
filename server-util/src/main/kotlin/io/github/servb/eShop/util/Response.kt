@@ -14,11 +14,6 @@ interface SuccessResult {
 
         override val ok = false
     }
-
-    object SUCCESS : SuccessResult {
-
-        override val ok = true
-    }
 }
 
 interface OptionalResult<out ResultType : Any> {

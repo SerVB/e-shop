@@ -75,7 +75,7 @@ private fun NormalOpenAPIRoute.post(database: Database, requestValidator: Reques
         exampleResponse = V1ProductPostOkResponse.EXAMPLE,
         exampleRequest = V1ProductPostRequestBody.EXAMPLE
     ) { params, body ->
-        requestValidator.validate(params.`X-Access-Token`)
+        requestValidator.validate(params.`X-Access-Token`, needAdmin = true)
 
         val id = newSuspendedTransaction(db = database) {
             ProductTable.insertAndGetId { it.fromProductWithoutId(body) }.value

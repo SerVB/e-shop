@@ -1,12 +1,15 @@
 package io.github.servb.eShop.product.handler.v1
 
 import com.papsign.ktor.openapigen.annotations.Response
+import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.info
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.path.normal.get
 import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
+import io.github.servb.eShop.product.middleware.auth.RequestValidator
+import io.github.servb.eShop.product.middleware.auth.throwsAuthExceptions
 import io.github.servb.eShop.product.model.ProductTable
 import io.github.servb.eShop.product.model.ProductTable.toProductWithId
 import io.github.servb.eShop.product.model.ProductWithId
@@ -16,6 +19,8 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 data class V1ProductsGetRequestParams(
+    @HeaderParam("Auth token.")
+    val `X-Access-Token`: String,
     @QueryParam("How many entries to drop. Default is $DEFAULT_OFFSET.")
     val offset: Int?,
     @QueryParam("How many entries to return. Maximum and default is $MAX_LIMIT.")
@@ -65,22 +70,26 @@ data class V1ProductsGetOkResponse(
     }
 }
 
-fun NormalOpenAPIRoute.returnProducts(database: Database) {
+fun NormalOpenAPIRoute.returnProducts(database: Database, requestValidator: RequestValidator) {
     route("products") {
-        get(database)
+        throwsAuthExceptions(OptionalResult.FAIL) {
+            get(database, requestValidator)
+        }
     }
 }
 
-private fun NormalOpenAPIRoute.get(database: Database) {
+private fun NormalOpenAPIRoute.get(database: Database, requestValidator: RequestValidator) {
     get<V1ProductsGetRequestParams, V1ProductsGetOkResponse>(
         info(
             summary = "Return a list of products.",
             description = "Returns `${OptionalResult::class.simpleName}` containing the list of products data."
         ),
         example = V1ProductsGetOkResponse.EXAMPLE
-    ) { param ->
-        val offset = param.offset ?: V1ProductsGetRequestParams.DEFAULT_OFFSET
-        val limit = param.limit ?: V1ProductsGetRequestParams.MAX_LIMIT
+    ) { params ->
+        requestValidator.validate(params.`X-Access-Token`, needAdmin = false)
+
+        val offset = params.offset ?: V1ProductsGetRequestParams.DEFAULT_OFFSET
+        val limit = params.limit ?: V1ProductsGetRequestParams.MAX_LIMIT
 
         val offsetInRange = maxOf(0, offset)
         val limitInRange = maxOf(0, minOf(limit, V1ProductsGetRequestParams.MAX_LIMIT))

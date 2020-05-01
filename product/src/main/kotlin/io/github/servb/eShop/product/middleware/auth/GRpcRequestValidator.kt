@@ -9,7 +9,7 @@ class GRpcRequestValidator(private val host: String, private val port: Int) : Re
 
     private val client = AccessTokenValidationClient(host, port)
 
-    override suspend fun validate(accessToken: String) {
+    override suspend fun validate(accessToken: String, needAdmin: Boolean) {
         val response = try {
             withTimeout(AUTH_TIMEOUT_MS) {
                 client.requestUserType(accessToken)
@@ -18,7 +18,11 @@ class GRpcRequestValidator(private val host: String, private val port: Int) : Re
             warnAndThrowProblemsWithConnection(t)
         }
 
-        if (response != ValidUserType.USER) {
+        if (needAdmin && response != ValidUserType.ADMIN) {
+            throw InvalidAuthTokenException
+        }
+
+        if (response !in setOf(ValidUserType.USER, ValidUserType.ADMIN)) {
             throw InvalidAuthTokenException
         }
     }

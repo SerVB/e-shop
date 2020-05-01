@@ -28,19 +28,29 @@ private fun Application.testContainerEShopProduct(requestValidator: RequestValid
 
 object AlwaysSuccessRequestValidator : RequestValidator {
 
-    override suspend fun validate(accessToken: String) = Unit
+    override suspend fun validate(accessToken: String, needAdmin: Boolean) = Unit
 }
 
 object AlwaysNoConnectionRequestValidator : RequestValidator {
 
-    override suspend fun validate(accessToken: String) = throw ProblemsWithConnectionToAuthServiceException(
-        Exception("There is always no connection")
-    )
+    override suspend fun validate(accessToken: String, needAdmin: Boolean) =
+        throw ProblemsWithConnectionToAuthServiceException(
+            Exception("There is always no connection")
+        )
 }
 
 object AlwaysFailRequestValidator : RequestValidator {
 
-    override suspend fun validate(accessToken: String) = throw InvalidAuthTokenException
+    override suspend fun validate(accessToken: String, needAdmin: Boolean) = throw InvalidAuthTokenException
+}
+
+object OnlyUserRequestValidator : RequestValidator {
+
+    override suspend fun validate(accessToken: String, needAdmin: Boolean) {
+        if (needAdmin) {
+            throw InvalidAuthTokenException
+        }
+    }
 }
 
 fun BehaviorSpec.givenTestContainerEShopProduct(

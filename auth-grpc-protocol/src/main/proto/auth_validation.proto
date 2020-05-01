@@ -16,6 +16,7 @@ message AccessTokenValidationReply {
   enum UserType {
     NotUser = 0;
     User = 1;
+    Admin = 2;
   }
 
   UserType userType = 1;

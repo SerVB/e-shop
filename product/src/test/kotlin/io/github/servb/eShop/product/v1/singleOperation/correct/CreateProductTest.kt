@@ -1,9 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.correct
 
-import io.github.servb.eShop.product.AlwaysFailRequestValidator
-import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
-import io.github.servb.eShop.product.AlwaysSuccessRequestValidator
-import io.github.servb.eShop.product.givenTestContainerEShopProduct
+import io.github.servb.eShop.product.*
 import io.github.servb.eShop.util.kotest.shouldContainJsonKeyAndValueOfSpecificType
 import io.github.servb.eShop.util.kotest.shouldContainOnlyJsonKey
 import io.github.servb.eShop.util.kotest.shouldMatchJson
@@ -21,6 +18,7 @@ import io.ktor.server.testing.setBody
 class CreateProductTest : BehaviorSpec({
     forAll(
         row(AlwaysNoConnectionRequestValidator, HttpStatusCode.NotImplemented),
+        row(OnlyUserRequestValidator, HttpStatusCode.Forbidden),
         row(AlwaysFailRequestValidator, HttpStatusCode.Forbidden)
     ) { requestValidator, status ->
         givenTestContainerEShopProduct(requestValidator) { eShopProduct ->

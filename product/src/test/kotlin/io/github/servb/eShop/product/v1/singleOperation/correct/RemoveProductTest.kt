@@ -1,9 +1,6 @@
 package io.github.servb.eShop.product.v1.singleOperation.correct
 
-import io.github.servb.eShop.product.AlwaysFailRequestValidator
-import io.github.servb.eShop.product.AlwaysNoConnectionRequestValidator
-import io.github.servb.eShop.product.AlwaysSuccessRequestValidator
-import io.github.servb.eShop.product.givenTestContainerEShopProduct
+import io.github.servb.eShop.product.*
 import io.github.servb.eShop.util.kotest.shouldMatchJson
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.data.blocking.forAll
@@ -16,6 +13,7 @@ import io.ktor.server.testing.handleRequest
 class RemoveProductTest : BehaviorSpec({
     forAll(
         row(AlwaysNoConnectionRequestValidator, HttpStatusCode.NotImplemented),
+        row(OnlyUserRequestValidator, HttpStatusCode.Forbidden),
         row(AlwaysFailRequestValidator, HttpStatusCode.Forbidden),
         row(AlwaysSuccessRequestValidator, HttpStatusCode.NotFound)
     ) { requestValidator, status ->

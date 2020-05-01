@@ -9,6 +9,6 @@ fun NormalOpenAPIRoute.addProductV1Routes(database: Database, requestValidator: 
     createProduct(database, requestValidator)
     editProduct(database, requestValidator)
     removeProduct(database, requestValidator)
-    returnProduct(database)
-    returnProducts(database)
+    returnProduct(database, requestValidator)
+    returnProducts(database, requestValidator)
 }

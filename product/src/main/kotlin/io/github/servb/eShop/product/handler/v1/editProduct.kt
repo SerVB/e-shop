@@ -79,7 +79,7 @@ private fun NormalOpenAPIRoute.put(database: Database, requestValidator: Request
         exampleResponse = V1ProductPutOkResponse,
         exampleRequest = V1ProductPutRequestBody.EXAMPLE
     ) { params, body ->
-        requestValidator.validate(params.`X-Access-Token`)
+        requestValidator.validate(params.`X-Access-Token`, needAdmin = true)
 
         newSuspendedTransaction(db = database) {
             require(ProductTable.select { ProductTable.id.eq(params.id) }.count() != 0L)

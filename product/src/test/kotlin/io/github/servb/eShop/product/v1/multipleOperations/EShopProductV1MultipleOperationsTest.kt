@@ -125,7 +125,9 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
             thirdId: Int
         ) {
             and("I call GET nonexistent /v1/product") {
-                val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/${thirdId + 1}")
+                val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/${thirdId + 1}") {
+                    this.addHeader("X-Access-Token", "no token")
+                }
 
                 then("the response status should be NotFound") {
                     call.response.status() shouldBe HttpStatusCode.NotFound
@@ -136,7 +138,9 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                 }
 
                 and("I call GET existent /v1/product") {
-                    val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/$secondId")
+                    val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/$secondId") {
+                        this.addHeader("X-Access-Token", "no token")
+                    }
 
                     then("the response status should be OK") {
                         call.response.status() shouldBe HttpStatusCode.OK
@@ -147,7 +151,9 @@ class EShopProductV1MultipleOperationsTest : BehaviorSpec({
                     }
 
                     and("I call GET existent /v1/product again") {
-                        val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/$secondId")
+                        val call = eShopProduct.handleRequest(HttpMethod.Get, "/v1/product/$secondId") {
+                            this.addHeader("X-Access-Token", "no token")
+                        }
 
                         then("the response status should be OK") {
                             call.response.status() shouldBe HttpStatusCode.OK

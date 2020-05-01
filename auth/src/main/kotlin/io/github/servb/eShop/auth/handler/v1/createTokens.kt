@@ -11,7 +11,7 @@ import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.throws
 import io.github.servb.eShop.auth.model.SessionTable
 import io.github.servb.eShop.auth.model.UserTable
-import io.github.servb.eShop.auth.model.UserWithoutId
+import io.github.servb.eShop.auth.model.UserWithoutRole
 import io.github.servb.eShop.auth.util.ParamsProvider
 import io.github.servb.eShop.auth.util.PasswordHasher
 import io.github.servb.eShop.auth.util.TokenCreator
@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 data class V1TokensPostRequestBody(
     override val username: String,
     override val password: String
-) : UserWithoutId {
+) : UserWithoutRole {
 
     companion object {
 
