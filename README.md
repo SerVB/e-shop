@@ -78,7 +78,7 @@ Extra points:
 ### 7. 2020.04.14
 - [x] Replace token validation to gRPC variant.
 - [x] Make protobuf files shared (extract to a module).
-- [ ] Hash passwords in storage.
+- [x] Hash passwords in storage.
 - [ ] Add roles: admin and user.
     - Admin can create, edit, and remove products. Also, they can create a new administrator. First created user is an administrator.
     - User can view products.

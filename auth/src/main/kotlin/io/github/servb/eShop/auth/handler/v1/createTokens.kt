@@ -13,6 +13,7 @@ import io.github.servb.eShop.auth.model.SessionTable
 import io.github.servb.eShop.auth.model.UserTable
 import io.github.servb.eShop.auth.model.UserWithoutId
 import io.github.servb.eShop.auth.util.ParamsProvider
+import io.github.servb.eShop.auth.util.PasswordHasher
 import io.github.servb.eShop.auth.util.TokenCreator
 import io.github.servb.eShop.util.OptionalResult
 import io.ktor.http.HttpStatusCode
@@ -89,7 +90,7 @@ private fun NormalOpenAPIRoute.post(database: Database) {
             val row = requireNotNull(
                 UserTable
                     .select {
-                        UserTable.username.eq(body.username) and UserTable.password.eq(body.password)
+                        UserTable.username.eq(body.username) and UserTable.hash.eq(PasswordHasher.createHash(body.password))
                     }
                     .singleOrNull()
             )
