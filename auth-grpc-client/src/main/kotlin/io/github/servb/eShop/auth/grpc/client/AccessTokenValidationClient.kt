@@ -29,6 +29,7 @@ class AccessTokenValidationClient(host: String, port: Int) : Closeable {
 
         when (response.userType) {
             AccessTokenValidationReply.UserType.User -> ValidUserType.USER
+            AccessTokenValidationReply.UserType.Admin -> ValidUserType.ADMIN
             else -> null
         }
     }
