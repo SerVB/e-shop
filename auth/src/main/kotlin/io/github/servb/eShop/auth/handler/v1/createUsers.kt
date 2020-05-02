@@ -94,19 +94,27 @@ private fun NormalOpenAPIRoute.post(database: Database) {
             UserTable.select { UserTable.role.eq(Role.ADMIN) }.firstOrNull() != null
         }
 
+        if (hasAdmins && creatorUserType != AccessTokenValidationReply.UserType.Admin) {
+            respond(
+                V1UsersPostOkResponse(
+                    ResultLists(
+                        created = emptyList(),
+                        conflicts = emptyList(),
+                        noRights = body.users.map(V1UsersPostRequestBody.User::username)
+                    )
+                )
+            )
+            @Suppress("LABEL_NAME_CLASH")
+            return@post
+        }
+
         val created = mutableListOf<String>()
         val conflicts = mutableListOf<String>()
-        val noRights = mutableListOf<String>()
 
         body.users.forEach { userToCreate ->
             newSuspendedTransaction(db = database) {
                 Do exhaustive when (UserTable.select { UserTable.username.eq(userToCreate.username) }.count()) {
                     0L -> {
-                        if (userToCreate.role == Role.ADMIN && hasAdmins && creatorUserType != AccessTokenValidationReply.UserType.Admin) {
-                            noRights.add(userToCreate.username)
-                            return@newSuspendedTransaction
-                        }
-
                         UserTable.insert { it.fromUserWithoutId(userToCreate) }
                         created.add(userToCreate.username)
                     }
@@ -121,7 +129,7 @@ private fun NormalOpenAPIRoute.post(database: Database) {
                 ResultLists(
                     created = created,
                     conflicts = conflicts,
-                    noRights = noRights
+                    noRights = emptyList()
                 )
             )
         )
